@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>INCOME ZONE | ADMIN PANEL</title>
+    <title>INCOME ZONE | ADMIN PANEL v4.0</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
@@ -512,6 +512,15 @@
             font-weight: 600;
         }
 
+        .withdraw-count {
+            background: var(--danger);
+            color: white;
+            border-radius: 50%;
+            padding: 2px 8px;
+            font-size: 11px;
+            margin-left: 5px;
+        }
+
         @media (max-width: 600px) {
             .stats-grid {
                 grid-template-columns: 1fr 1fr;
@@ -551,7 +560,7 @@
 
     <div class="admin-header">
         <h1>👑 INCOME ZONE</h1>
-        <p>Admin Control Panel v3.0 • Full Control</p>
+        <p>Admin Control Panel v4.0 • Full Control</p>
         <span class="admin-badge">🔒 SECURE ADMIN</span>
     </div>
 
@@ -580,7 +589,7 @@
 
     <div class="admin-tabs">
         <div class="admin-tab active" data-tab="users">👥 Users</div>
-        <div class="admin-tab" data-tab="withdrawals">💸 Withdrawals</div>
+        <div class="admin-tab" data-tab="withdrawals">💸 Withdrawals <span class="withdraw-count" id="withdrawCount">0</span></div>
         <div class="admin-tab" data-tab="logs">📋 Action Logs</div>
         <div class="admin-tab" data-tab="settings">⚙️ Settings</div>
     </div>
@@ -791,6 +800,7 @@
             document.getElementById('totalBalance').textContent = totalBalance.toLocaleString();
             document.getElementById('bannedUsers').textContent = banned;
             document.getElementById('pendingWithdrawals').textContent = pending;
+            document.getElementById('withdrawCount').textContent = pending;
         }
 
         function renderUsers() {
@@ -864,8 +874,8 @@
                     <div class="user-actions">
                         <span class="status-badge status-${w.status}">${w.status.toUpperCase()}</span>
                         ${w.status === 'pending' ? `
-                            <button class="btn-sm btn-approve" onclick="approveWithdrawal(${index})">✅</button>
-                            <button class="btn-sm btn-reject" onclick="rejectWithdrawal(${index})">❌</button>
+                            <button class="btn-sm btn-approve" onclick="approveWithdrawal(${index})">✅ Approve</button>
+                            <button class="btn-sm btn-reject" onclick="rejectWithdrawal(${index})">❌ Reject</button>
                         ` : ''}
                     </div>
                 </div>
@@ -953,7 +963,7 @@
                 return;
             }
             
-            // Add coins
+            // Add coins to admin data
             user.balance = (user.balance || 0) + amount;
             
             // ALSO update user app localStorage
@@ -1001,7 +1011,7 @@
                 return;
             }
             
-            // Remove coins
+            // Remove coins from admin data
             user.balance = (user.balance || 0) - amount;
             
             // ALSO update user app localStorage
@@ -1067,10 +1077,20 @@
             const w = adminData.withdrawals[index];
             if (!w) return;
             
-            // Return coins to user
+            // Return coins to user in admin data
             if (adminData.users[w.userId]) {
                 adminData.users[w.userId].balance = (adminData.users[w.userId].balance || 0) + w.amount;
             }
+            
+            // ALSO update user app localStorage
+            try {
+                const userDataRaw = localStorage.getItem(USER_STORAGE_KEY);
+                if (userDataRaw) {
+                    const userData = JSON.parse(userDataRaw);
+                    userData.balance = (userData.balance || 0) + w.amount;
+                    localStorage.setItem(USER_STORAGE_KEY, JSON.stringify(userData));
+                }
+            } catch(e) {}
             
             w.status = 'failed';
             saveData();
@@ -1155,13 +1175,13 @@
         // ========== INIT ==========
         loadData();
         syncUserData();
-        showToast('👋 Welcome Admin! Panel ready');
+        showToast('👋 Welcome Admin! Panel v4.0 ready');
 
         // Load settings
         document.getElementById('minWithdraw').value = adminData.settings.minWithdraw || 10000;
         document.getElementById('adReward').value = adminData.settings.adReward || 10;
 
-        console.log('✅ Admin Panel Loaded');
+        console.log('✅ Admin Panel v4.0 Loaded');
         console.log('📊 Total Users:', Object.keys(adminData.users).length);
         console.log('📤 Pending Withdrawals:', adminData.withdrawals.filter(w => w.status === 'pending').length);
     </script>
