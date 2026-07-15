@@ -9,6 +9,7 @@
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     
     <style>
+        /* ========== সমস্ত CSS আগের মতোই থাকবে ========== */
         * {
             margin: 0;
             padding: 0;
@@ -560,7 +561,7 @@
 
     <div class="admin-header">
         <h1>👑 INCOME ZONE</h1>
-        <p>Admin Control Panel v4.0 • Full Control</p>
+        <p>Admin Control Panel v4.0 • Multi-Account Support</p>
         <span class="admin-badge">🔒 SECURE ADMIN</span>
     </div>
 
@@ -696,7 +697,7 @@
         const BOT_TOKEN = "8252246058:AAE51zYPDXgnDdgOCCZh7_YwM6d2WyYsjaI";
         const ADMIN_CHAT_ID = "7694112804";
         const STORAGE_KEY = 'incomeZoneAdminData';
-        const USER_STORAGE_KEY = 'incomeZone4kData';
+        const USER_STORAGE_KEY_PREFIX = 'incomeZone4kData_'; // ✅ ইউজার অ্যাপের স্টোরেজ কী প্রিফিক্স
 
         // ========== DATA STORE ==========
         let adminData = {
@@ -743,34 +744,57 @@
         // ========== SYNC USER DATA ==========
         function syncUserData() {
             try {
-                const userDataRaw = localStorage.getItem(USER_STORAGE_KEY);
-                if (!userDataRaw) return;
-
-                const userData = JSON.parse(userDataRaw);
-                const userId = userData.telegramId || 'unknown';
-
-                // Check if user exists, if not create
-                if (!adminData.users[userId]) {
-                    adminData.users[userId] = {
-                        name: userData.userName || 'User',
-                        joinDate: new Date().toISOString(),
-                        balance: 0,
-                        adsWatched: 0,
-                        todayEarnings: 0,
-                        banned: false,
-                        totalEarned: 0
-                    };
-                    addLog('user_joined', userId, `${userData.userName} joined`);
+                // ✅ সব ইউজার স্টোরেজ কী খুঁজুন
+                const allKeys = Object.keys(localStorage);
+                const userKeys = allKeys.filter(key => key.startsWith(USER_STORAGE_KEY_PREFIX));
+                
+                if (userKeys.length === 0) {
+                    // কোনো ইউজার নেই
+                    return;
                 }
 
-                // Update user data from user app
-                adminData.users[userId].balance = userData.balance || 0;
-                adminData.users[userId].adsWatched = userData.adsWatched || 0;
-                adminData.users[userId].todayEarnings = userData.todayEarnings || 0;
-                adminData.users[userId].lastActive = new Date().toISOString();
+                let updated = false;
 
-                saveData();
-                renderAll();
+                userKeys.forEach(key => {
+                    try {
+                        const userDataRaw = localStorage.getItem(key);
+                        if (!userDataRaw) return;
+
+                        const userData = JSON.parse(userDataRaw);
+                        const userId = userData.telegramId || key.replace(USER_STORAGE_KEY_PREFIX, '');
+
+                        // ইউজার অ্যাডমিন ডেটাতে আপডেট করুন
+                        if (!adminData.users[userId]) {
+                            adminData.users[userId] = {
+                                name: userData.userName || 'User',
+                                joinDate: new Date().toISOString(),
+                                balance: 0,
+                                adsWatched: 0,
+                                todayEarnings: 0,
+                                banned: false,
+                                totalEarned: 0
+                            };
+                            addLog('user_joined', userId, `${userData.userName} joined`);
+                            updated = true;
+                        }
+
+                        // ডেটা আপডেট করুন
+                        adminData.users[userId].name = userData.userName || adminData.users[userId].name;
+                        adminData.users[userId].balance = userData.balance || 0;
+                        adminData.users[userId].adsWatched = userData.adsWatched || 0;
+                        adminData.users[userId].todayEarnings = userData.todayEarnings || 0;
+                        adminData.users[userId].lastActive = new Date().toISOString();
+                        updated = true;
+
+                    } catch(e) {
+                        console.error('Error syncing user from key:', key, e);
+                    }
+                });
+
+                if (updated) {
+                    saveData();
+                    renderAll();
+                }
             } catch(e) {
                 console.error('Error syncing user data:', e);
             }
@@ -963,18 +987,21 @@
                 return;
             }
             
-            // Add coins to admin data
+            // ✅ অ্যাডমিন ডেটায় কয়েন যোগ করুন
             user.balance = (user.balance || 0) + amount;
             
-            // ALSO update user app localStorage
+            // ✅ ইউজারের স্টোরেজ আপডেট করুন
+            const userStorageKey = USER_STORAGE_KEY_PREFIX + currentUserId;
             try {
-                const userDataRaw = localStorage.getItem(USER_STORAGE_KEY);
+                const userDataRaw = localStorage.getItem(userStorageKey);
                 if (userDataRaw) {
                     const userData = JSON.parse(userDataRaw);
                     userData.balance = (userData.balance || 0) + amount;
-                    localStorage.setItem(USER_STORAGE_KEY, JSON.stringify(userData));
+                    localStorage.setItem(userStorageKey, JSON.stringify(userData));
                 }
-            } catch(e) {}
+            } catch(e) {
+                console.error('Error updating user storage:', e);
+            }
             
             saveData();
             addLog('balance_added', currentUserId, `Added ${amount} coins to ${user.name}`);
@@ -1011,18 +1038,21 @@
                 return;
             }
             
-            // Remove coins from admin data
+            // ✅ অ্যাডমিন ডেটা থেকে কয়েন কমান
             user.balance = (user.balance || 0) - amount;
             
-            // ALSO update user app localStorage
+            // ✅ ইউজারের স্টোরেজ আপডেট করুন
+            const userStorageKey = USER_STORAGE_KEY_PREFIX + currentUserId;
             try {
-                const userDataRaw = localStorage.getItem(USER_STORAGE_KEY);
+                const userDataRaw = localStorage.getItem(userStorageKey);
                 if (userDataRaw) {
                     const userData = JSON.parse(userDataRaw);
                     userData.balance = (userData.balance || 0) - amount;
-                    localStorage.setItem(USER_STORAGE_KEY, JSON.stringify(userData));
+                    localStorage.setItem(userStorageKey, JSON.stringify(userData));
                 }
-            } catch(e) {}
+            } catch(e) {
+                console.error('Error updating user storage:', e);
+            }
             
             saveData();
             addLog('balance_removed', currentUserId, `Removed ${amount} coins from ${user.name}`);
@@ -1077,20 +1107,23 @@
             const w = adminData.withdrawals[index];
             if (!w) return;
             
-            // Return coins to user in admin data
+            // ✅ অ্যাডমিন ডেটায় কয়েন ফেরত দিন
             if (adminData.users[w.userId]) {
                 adminData.users[w.userId].balance = (adminData.users[w.userId].balance || 0) + w.amount;
             }
             
-            // ALSO update user app localStorage
+            // ✅ ইউজারের স্টোরেজ আপডেট করুন
+            const userStorageKey = USER_STORAGE_KEY_PREFIX + w.userId;
             try {
-                const userDataRaw = localStorage.getItem(USER_STORAGE_KEY);
+                const userDataRaw = localStorage.getItem(userStorageKey);
                 if (userDataRaw) {
                     const userData = JSON.parse(userDataRaw);
                     userData.balance = (userData.balance || 0) + w.amount;
-                    localStorage.setItem(USER_STORAGE_KEY, JSON.stringify(userData));
+                    localStorage.setItem(userStorageKey, JSON.stringify(userData));
                 }
-            } catch(e) {}
+            } catch(e) {
+                console.error('Error updating user storage:', e);
+            }
             
             w.status = 'failed';
             saveData();
@@ -1170,18 +1203,18 @@
         });
 
         // ========== AUTO SYNC ==========
-        setInterval(syncUserData, 3000);
+        setInterval(syncUserData, 5000);
 
         // ========== INIT ==========
         loadData();
         syncUserData();
-        showToast('👋 Welcome Admin! Panel v4.0 ready');
+        showToast('👋 Welcome Admin! Panel v4.0 with Multi-Account Support');
 
         // Load settings
         document.getElementById('minWithdraw').value = adminData.settings.minWithdraw || 10000;
         document.getElementById('adReward').value = adminData.settings.adReward || 10;
 
-        console.log('✅ Admin Panel v4.0 Loaded');
+        console.log('✅ Admin Panel v4.0 Loaded (Multi-Account Support)');
         console.log('📊 Total Users:', Object.keys(adminData.users).length);
         console.log('📤 Pending Withdrawals:', adminData.withdrawals.filter(w => w.status === 'pending').length);
     </script>
