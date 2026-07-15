@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>INCOME ZONE | ADMIN PANEL v3.0</title>
+    <title>INCOME ZONE | ADMIN PANEL</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
@@ -38,7 +38,6 @@
             background: radial-gradient(circle at 0% 0%, #0a0a2a, #050515);
         }
 
-        /* Admin Header */
         .admin-header {
             background: rgba(255,255,255,0.05);
             backdrop-filter: blur(20px);
@@ -74,7 +73,6 @@
             -webkit-text-fill-color: white;
         }
 
-        /* Stats Grid */
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
@@ -116,7 +114,6 @@
             margin-top: 5px;
         }
 
-        /* Tabs */
         .admin-tabs {
             display: flex;
             gap: 10px;
@@ -150,7 +147,6 @@
             border-color: var(--secondary);
         }
 
-        /* Content */
         .tab-content {
             display: none;
             animation: fadeIn 0.4s ease;
@@ -165,7 +161,6 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* User List */
         .user-list {
             background: var(--bg-card);
             backdrop-filter: blur(20px);
@@ -291,7 +286,11 @@
             color: white;
         }
 
-        /* Modal */
+        .btn-close-modal {
+            background: rgba(255,255,255,0.1);
+            color: white;
+        }
+
         .modal-overlay {
             display: none;
             position: fixed;
@@ -390,12 +389,6 @@
             min-width: 100px;
         }
 
-        .btn-close-modal {
-            background: rgba(255,255,255,0.1);
-            color: white;
-        }
-
-        /* Toast */
         .toast {
             position: fixed;
             bottom: 30px;
@@ -427,7 +420,6 @@
             border-color: var(--warning);
         }
 
-        /* Empty State */
         .empty-state {
             text-align: center;
             padding: 40px 20px;
@@ -440,7 +432,6 @@
             opacity: 0.3;
         }
 
-        /* Search */
         .search-box {
             width: 100%;
             padding: 12px 20px;
@@ -462,7 +453,6 @@
             color: var(--text-secondary);
         }
 
-        /* Status Badge */
         .status-badge {
             display: inline-block;
             padding: 3px 12px;
@@ -496,7 +486,6 @@
             color: #FF006E;
         }
 
-        /* Action Log */
         .action-log {
             background: rgba(255,255,255,0.03);
             border-radius: 15px;
@@ -523,7 +512,6 @@
             font-weight: 600;
         }
 
-        /* Responsive */
         @media (max-width: 600px) {
             .stats-grid {
                 grid-template-columns: 1fr 1fr;
@@ -561,14 +549,12 @@
 </head>
 <body>
 
-    <!-- Header -->
     <div class="admin-header">
         <h1>👑 INCOME ZONE</h1>
         <p>Admin Control Panel v3.0 • Full Control</p>
         <span class="admin-badge">🔒 SECURE ADMIN</span>
     </div>
 
-    <!-- Stats -->
     <div class="stats-grid" id="statsGrid">
         <div class="stat-card">
             <div class="icon">👤</div>
@@ -592,7 +578,6 @@
         </div>
     </div>
 
-    <!-- Tabs -->
     <div class="admin-tabs">
         <div class="admin-tab active" data-tab="users">👥 Users</div>
         <div class="admin-tab" data-tab="withdrawals">💸 Withdrawals</div>
@@ -600,7 +585,6 @@
         <div class="admin-tab" data-tab="settings">⚙️ Settings</div>
     </div>
 
-    <!-- Users Tab -->
     <div class="tab-content active" id="users-tab">
         <div class="user-list">
             <input type="text" class="search-box" id="searchUser" placeholder="🔍 Search user by name or ID...">
@@ -613,7 +597,6 @@
         </div>
     </div>
 
-    <!-- Withdrawals Tab -->
     <div class="tab-content" id="withdrawals-tab">
         <div class="user-list">
             <h3 style="margin-bottom: 15px;">💸 Withdrawal Requests</h3>
@@ -626,7 +609,6 @@
         </div>
     </div>
 
-    <!-- Logs Tab -->
     <div class="tab-content" id="logs-tab">
         <div class="user-list">
             <h3 style="margin-bottom: 15px;">📋 Admin Action Logs</h3>
@@ -639,7 +621,6 @@
         </div>
     </div>
 
-    <!-- Settings Tab -->
     <div class="tab-content" id="settings-tab">
         <div class="user-list">
             <div style="padding: 20px;">
@@ -680,26 +661,25 @@
                 <div class="info-row"><span class="label">Status</span><span class="value" id="modalStatus">-</span></div>
 
                 <div class="modal-input-group">
-                    <label>Add Coins</label>
+                    <label>➕ Add Coins</label>
                     <input type="number" id="addCoinsInput" placeholder="Enter amount to add...">
                     <button class="btn-sm btn-add" onclick="addBalance()" style="margin-top: 10px; width: 100%; padding: 10px;">➕ Add Coins</button>
                 </div>
 
                 <div class="modal-input-group">
-                    <label>Remove Coins</label>
+                    <label>➖ Remove Coins</label>
                     <input type="number" id="removeCoinsInput" placeholder="Enter amount to remove...">
                     <button class="btn-sm btn-remove" onclick="removeBalance()" style="margin-top: 10px; width: 100%; padding: 10px;">➖ Remove Coins</button>
                 </div>
 
                 <div class="modal-btn-group">
                     <button class="btn-sm btn-ban" id="banBtn" onclick="toggleBan()">🚫 Ban User</button>
-                    <button class="btn-sm btn-close-modal" onclick="closeModal('userActionModal')">❌ Close</button>
+                    <button class="btn-sm btn-close-modal" onclick="closeModal()">❌ Close</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Toast Notification -->
     <div class="toast" id="toast"></div>
 
     <script>
@@ -707,6 +687,7 @@
         const BOT_TOKEN = "8252246058:AAE51zYPDXgnDdgOCCZh7_YwM6d2WyYsjaI";
         const ADMIN_CHAT_ID = "7694112804";
         const STORAGE_KEY = 'incomeZoneAdminData';
+        const USER_STORAGE_KEY = 'incomeZone4kData';
 
         // ========== DATA STORE ==========
         let adminData = {
@@ -721,73 +702,84 @@
 
         let currentUserId = null;
 
-        // ========== TELEGRAM INTEGRATION ==========
+        // ========== TELEGRAM ==========
         let tg = window.Telegram?.WebApp;
         if (tg) {
             tg.expand();
             tg.enableClosingConfirmation();
         }
 
-        // ========== LOAD DATA ==========
+        // ========== DATA FUNCTIONS ==========
         function loadData() {
             const saved = localStorage.getItem(STORAGE_KEY);
             if (saved) {
                 try {
                     const parsed = JSON.parse(saved);
                     adminData = parsed;
-                } catch(e) {}
+                } catch(e) {
+                    console.error('Error loading admin data:', e);
+                }
             }
             renderAll();
         }
 
         function saveData() {
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(adminData));
+            try {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(adminData));
+            } catch(e) {
+                console.error('Error saving admin data:', e);
+            }
         }
 
-        // ========== LOG ACTION ==========
-        function logAction(action, userId, details) {
+        // ========== SYNC USER DATA ==========
+        function syncUserData() {
+            try {
+                const userDataRaw = localStorage.getItem(USER_STORAGE_KEY);
+                if (!userDataRaw) return;
+
+                const userData = JSON.parse(userDataRaw);
+                const userId = userData.telegramId || 'unknown';
+
+                // Check if user exists, if not create
+                if (!adminData.users[userId]) {
+                    adminData.users[userId] = {
+                        name: userData.userName || 'User',
+                        joinDate: new Date().toISOString(),
+                        balance: 0,
+                        adsWatched: 0,
+                        todayEarnings: 0,
+                        banned: false,
+                        totalEarned: 0
+                    };
+                    addLog('user_joined', userId, `${userData.userName} joined`);
+                }
+
+                // Update user data from user app
+                adminData.users[userId].balance = userData.balance || 0;
+                adminData.users[userId].adsWatched = userData.adsWatched || 0;
+                adminData.users[userId].todayEarnings = userData.todayEarnings || 0;
+                adminData.users[userId].lastActive = new Date().toISOString();
+
+                saveData();
+                renderAll();
+            } catch(e) {
+                console.error('Error syncing user data:', e);
+            }
+        }
+
+        // ========== LOG ==========
+        function addLog(action, userId, details) {
             adminData.logs.unshift({
                 action: action,
-                userId: userId,
-                details: details,
+                userId: userId || 'admin',
+                details: details || '',
                 time: new Date().toISOString()
             });
-            if (adminData.logs.length > 100) adminData.logs.pop();
+            if (adminData.logs.length > 200) adminData.logs.pop();
             saveData();
-            renderLogs();
         }
 
-        // ========== SYNC WITH USER APP ==========
-        function syncWithUserApp() {
-            try {
-                // ইউজার অ্যাপ থেকে ডেটা নেওয়া
-                const userData = localStorage.getItem('incomeZone4kData');
-                if (userData) {
-                    const users = JSON.parse(userData);
-                    const userId = users.telegramId || 'unknown';
-                    
-                    if (!adminData.users[userId]) {
-                        adminData.users[userId] = {
-                            name: users.userName || 'User',
-                            joinDate: new Date().toISOString(),
-                            totalEarned: 0,
-                            banned: false
-                        };
-                        logAction('user_joined', userId, `${users.userName} joined the platform`);
-                    }
-                    
-                    adminData.users[userId].balance = users.balance || 0;
-                    adminData.users[userId].adsWatched = users.adsWatched || 0;
-                    adminData.users[userId].todayEarnings = users.todayEarnings || 0;
-                    adminData.users[userId].lastActive = new Date().toISOString();
-                    
-                    saveData();
-                    renderAll();
-                }
-            } catch(e) {}
-        }
-
-        // ========== RENDER FUNCTIONS ==========
+        // ========== RENDER ==========
         function renderStats() {
             const users = Object.values(adminData.users);
             const totalUsers = users.length;
@@ -818,7 +810,7 @@
                 container.innerHTML = `
                     <div class="empty-state">
                         <i class="fas fa-users"></i>
-                        <p>${searchTerm ? 'No users found matching "' + searchTerm + '"' : 'No users yet. Wait for users to join!'}</p>
+                        <p>${searchTerm ? 'No users found matching "' + searchTerm + '"' : 'No users yet'}</p>
                     </div>
                 `;
                 return;
@@ -829,11 +821,15 @@
                     <div class="user-info">
                         <div class="user-avatar">${data.name?.[0]?.toUpperCase() || '?'}</div>
                         <div class="user-details">
-                            <div class="user-name">${data.name || 'Unknown'} <span class="status-badge ${data.banned ? 'status-banned' : 'status-active'}">${data.banned ? '🚫 BANNED' : '✅ ACTIVE'}</span></div>
-                            <div class="user-id">ID: ${id.substring(0, 12)}...</div>
+                            <div class="user-name">${data.name || 'Unknown'} 
+                                <span class="status-badge ${data.banned ? 'status-banned' : 'status-active'}">
+                                    ${data.banned ? '🚫 BANNED' : '✅ ACTIVE'}
+                                </span>
+                            </div>
+                            <div class="user-id">🆔 ${id.substring(0, 12)}...</div>
                         </div>
                     </div>
-                    <div class="user-balance">${(data.balance || 0).toLocaleString()} 🪙</div>
+                    <div class="user-balance">💰 ${(data.balance || 0).toLocaleString()}</div>
                     <div class="user-actions">
                         <button class="btn-sm btn-edit" onclick="openUserActions('${id}')">⚡ Manage</button>
                     </div>
@@ -864,12 +860,12 @@
                             <div class="user-id">📱 ${w.bkashNumber} • ${new Date(w.date).toLocaleString()}</div>
                         </div>
                     </div>
-                    <div class="user-balance">${w.amount.toLocaleString()} 🪙</div>
+                    <div class="user-balance">💰 ${w.amount.toLocaleString()}</div>
                     <div class="user-actions">
                         <span class="status-badge status-${w.status}">${w.status.toUpperCase()}</span>
                         ${w.status === 'pending' ? `
-                            <button class="btn-sm btn-approve" onclick="approveWithdrawal(${index})">✅ Approve</button>
-                            <button class="btn-sm btn-reject" onclick="rejectWithdrawal(${index})">❌ Reject</button>
+                            <button class="btn-sm btn-approve" onclick="approveWithdrawal(${index})">✅</button>
+                            <button class="btn-sm btn-reject" onclick="rejectWithdrawal(${index})">❌</button>
                         ` : ''}
                     </div>
                 </div>
@@ -895,7 +891,6 @@
                     <span class="time">${new Date(log.time).toLocaleString()}</span>
                     <span class="action">${log.action}</span>
                     ${log.details ? `— ${log.details}` : ''}
-                    ${log.userId ? `<span style="font-size:11px;color:var(--text-secondary);">(${log.userId.substring(0, 10)})</span>` : ''}
                 </div>
             `).join('');
         }
@@ -911,7 +906,10 @@
         function openUserActions(userId) {
             currentUserId = userId;
             const user = adminData.users[userId];
-            if (!user) return;
+            if (!user) {
+                showToast('User not found', 'error');
+                return;
+            }
 
             document.getElementById('modalTitle').textContent = `👤 ${user.name || 'User'}`;
             document.getElementById('modalName').textContent = user.name || 'Unknown';
@@ -929,60 +927,122 @@
             document.getElementById('userActionModal').classList.add('show');
         }
 
+        function closeModal() {
+            document.getElementById('userActionModal').classList.remove('show');
+            currentUserId = null;
+        }
+
+        // ========== ADD BALANCE ==========
         function addBalance() {
             const input = document.getElementById('addCoinsInput');
             const amount = parseInt(input.value);
+            
             if (!amount || amount <= 0) {
-                showToast('Please enter a valid amount', 'error');
+                showToast('Please enter a valid amount (minimum 1)', 'error');
+                return;
+            }
+            
+            if (!currentUserId) {
+                showToast('No user selected', 'error');
                 return;
             }
             
             const user = adminData.users[currentUserId];
-            if (!user) return;
+            if (!user) {
+                showToast('User not found', 'error');
+                return;
+            }
             
+            // Add coins
             user.balance = (user.balance || 0) + amount;
+            
+            // ALSO update user app localStorage
+            try {
+                const userDataRaw = localStorage.getItem(USER_STORAGE_KEY);
+                if (userDataRaw) {
+                    const userData = JSON.parse(userDataRaw);
+                    userData.balance = (userData.balance || 0) + amount;
+                    localStorage.setItem(USER_STORAGE_KEY, JSON.stringify(userData));
+                }
+            } catch(e) {}
+            
             saveData();
+            addLog('balance_added', currentUserId, `Added ${amount} coins to ${user.name}`);
             renderAll();
-            logAction('balance_added', currentUserId, `Added ${amount} coins`);
             showToast(`✅ Added ${amount} coins to ${user.name}`, 'success');
-            input.value = '';
+            
+            // Refresh modal
             openUserActions(currentUserId);
         }
 
+        // ========== REMOVE BALANCE ==========
         function removeBalance() {
             const input = document.getElementById('removeCoinsInput');
             const amount = parseInt(input.value);
+            
             if (!amount || amount <= 0) {
-                showToast('Please enter a valid amount', 'error');
+                showToast('Please enter a valid amount (minimum 1)', 'error');
+                return;
+            }
+            
+            if (!currentUserId) {
+                showToast('No user selected', 'error');
                 return;
             }
             
             const user = adminData.users[currentUserId];
-            if (!user) return;
-            
-            if ((user.balance || 0) < amount) {
-                showToast('❌ Insufficient balance', 'error');
+            if (!user) {
+                showToast('User not found', 'error');
                 return;
             }
             
+            if ((user.balance || 0) < amount) {
+                showToast(`❌ Insufficient balance! User has ${user.balance} coins`, 'error');
+                return;
+            }
+            
+            // Remove coins
             user.balance = (user.balance || 0) - amount;
+            
+            // ALSO update user app localStorage
+            try {
+                const userDataRaw = localStorage.getItem(USER_STORAGE_KEY);
+                if (userDataRaw) {
+                    const userData = JSON.parse(userDataRaw);
+                    userData.balance = (userData.balance || 0) - amount;
+                    localStorage.setItem(USER_STORAGE_KEY, JSON.stringify(userData));
+                }
+            } catch(e) {}
+            
             saveData();
+            addLog('balance_removed', currentUserId, `Removed ${amount} coins from ${user.name}`);
             renderAll();
-            logAction('balance_removed', currentUserId, `Removed ${amount} coins`);
             showToast(`✅ Removed ${amount} coins from ${user.name}`, 'warning');
-            input.value = '';
+            
+            // Refresh modal
             openUserActions(currentUserId);
         }
 
+        // ========== TOGGLE BAN ==========
         function toggleBan() {
+            if (!currentUserId) {
+                showToast('No user selected', 'error');
+                return;
+            }
+            
             const user = adminData.users[currentUserId];
-            if (!user) return;
+            if (!user) {
+                showToast('User not found', 'error');
+                return;
+            }
             
             user.banned = !user.banned;
             saveData();
+            addLog(user.banned ? 'user_banned' : 'user_unbanned', currentUserId, `${user.name} ${user.banned ? 'banned' : 'unbanned'}`);
             renderAll();
-            logAction(user.banned ? 'user_banned' : 'user_unbanned', currentUserId, `${user.name} ${user.banned ? 'banned' : 'unbanned'}`);
             showToast(`${user.banned ? '🚫 Banned' : '✅ Unbanned'} ${user.name}`, user.banned ? 'error' : 'success');
+            
+            // Refresh modal
             openUserActions(currentUserId);
         }
 
@@ -991,27 +1051,32 @@
             if (!confirm('Approve this withdrawal?')) return;
             
             const w = adminData.withdrawals[index];
+            if (!w) return;
+            
             w.status = 'completed';
             saveData();
+            addLog('withdrawal_approved', w.userId, `Approved ${w.amount} coins for ${w.userName}`);
             renderAll();
-            logAction('withdrawal_approved', w.userId, `Approved ${w.amount} coins for ${w.userName}`);
-            showToast('✅ Withdrawal approved!', 'success');
+            showToast(`✅ Approved ${w.amount} coins for ${w.userName}`, 'success');
             sendTelegramNotification(w, 'approved');
         }
 
         function rejectWithdrawal(index) {
-            if (!confirm('Reject this withdrawal?')) return;
+            if (!confirm('Reject this withdrawal? Coins will be returned to user.')) return;
             
             const w = adminData.withdrawals[index];
+            if (!w) return;
+            
             // Return coins to user
             if (adminData.users[w.userId]) {
                 adminData.users[w.userId].balance = (adminData.users[w.userId].balance || 0) + w.amount;
             }
+            
             w.status = 'failed';
             saveData();
+            addLog('withdrawal_rejected', w.userId, `Rejected ${w.amount} coins for ${w.userName}`);
             renderAll();
-            logAction('withdrawal_rejected', w.userId, `Rejected ${w.amount} coins for ${w.userName}`);
-            showToast('❌ Withdrawal rejected. Coins returned.', 'error');
+            showToast(`❌ Rejected ${w.amount} coins for ${w.userName}`, 'error');
             sendTelegramNotification(w, 'rejected');
         }
 
@@ -1024,11 +1089,11 @@
             if (adReward > 0) adminData.settings.adReward = adReward;
             
             saveData();
-            logAction('settings_updated', 'admin', 'Updated admin settings');
+            addLog('settings_updated', 'admin', 'Updated admin settings');
             showToast('✅ Settings saved!', 'success');
         }
 
-        // ========== TELEGRAM NOTIFICATION ==========
+        // ========== TELEGRAM ==========
         async function sendTelegramNotification(withdrawal, status) {
             const message = `📊 *WITHDRAWAL ${status.toUpperCase()}* 📊\n\n` +
                 `👤 *User:* ${withdrawal.userName || 'Unknown'}\n` +
@@ -1057,14 +1122,10 @@
             toast.textContent = msg;
             toast.className = `toast ${type}`;
             toast.style.display = 'block';
-            setTimeout(() => {
+            clearTimeout(toast._timeout);
+            toast._timeout = setTimeout(() => {
                 toast.style.display = 'none';
-            }, 3000);
-        }
-
-        // ========== MODAL ==========
-        function closeModal(id) {
-            document.getElementById(id).classList.remove('show');
+            }, 4000);
         }
 
         // ========== TABS ==========
@@ -1081,24 +1142,24 @@
         // ========== SEARCH ==========
         document.getElementById('searchUser')?.addEventListener('input', renderUsers);
 
+        // ========== MODAL CLOSE ==========
+        document.querySelectorAll('.modal-overlay').forEach(modal => {
+            modal.addEventListener('click', function(e) {
+                if (e.target === this) closeModal();
+            });
+        });
+
         // ========== AUTO SYNC ==========
-        setInterval(syncWithUserApp, 3000);
+        setInterval(syncUserData, 3000);
 
         // ========== INIT ==========
         loadData();
-        syncWithUserApp();
-        showToast('👋 Welcome Admin! Full control panel ready');
+        syncUserData();
+        showToast('👋 Welcome Admin! Panel ready');
 
         // Load settings
         document.getElementById('minWithdraw').value = adminData.settings.minWithdraw || 10000;
         document.getElementById('adReward').value = adminData.settings.adReward || 10;
-
-        // Close modal on overlay click
-        document.querySelectorAll('.modal-overlay').forEach(modal => {
-            modal.addEventListener('click', function(e) {
-                if (e.target === this) this.classList.remove('show');
-            });
-        });
 
         console.log('✅ Admin Panel Loaded');
         console.log('📊 Total Users:', Object.keys(adminData.users).length);
