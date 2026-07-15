@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>INCOME ZONE | ADMIN PANEL v4.0</title>
+    <title>INCOME ZONE | ADMIN PANEL v5.0</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     
     <style>
-        /* ========== সমস্ত CSS আগের মতোই থাকবে ========== */
+        /* ========== CSS ========== */
         * {
             margin: 0;
             padding: 0;
@@ -115,6 +115,7 @@
             margin-top: 5px;
         }
 
+        /* Main Tabs */
         .admin-tabs {
             display: flex;
             gap: 10px;
@@ -171,6 +172,62 @@
             overflow-x: auto;
         }
 
+        /* Withdraw Sub Tabs */
+        .withdraw-sub-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .withdraw-sub-tab {
+            padding: 10px 20px;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid var(--border-glass);
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 13px;
+            transition: all 0.3s ease;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .withdraw-sub-tab .count {
+            background: rgba(255,255,255,0.1);
+            padding: 1px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+        }
+
+        .withdraw-sub-tab.active {
+            background: var(--gradient);
+            border-color: transparent;
+            color: white;
+            -webkit-text-fill-color: white;
+        }
+
+        .withdraw-sub-tab.active .count {
+            background: rgba(255,255,255,0.2);
+        }
+
+        .withdraw-sub-tab:hover:not(.active) {
+            border-color: var(--secondary);
+        }
+
+        /* Withdraw Sub Content */
+        .withdraw-sub-content {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .withdraw-sub-content.active {
+            display: block;
+        }
+
+        /* User Item */
         .user-item {
             display: flex;
             justify-content: space-between;
@@ -292,6 +349,41 @@
             color: white;
         }
 
+        /* Status Badge */
+        .status-badge {
+            display: inline-block;
+            padding: 3px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .status-active {
+            background: rgba(0,245,212,0.2);
+            color: #00F5D4;
+        }
+
+        .status-banned {
+            background: rgba(255,0,110,0.2);
+            color: #FF006E;
+        }
+
+        .status-pending {
+            background: rgba(255,158,0,0.2);
+            color: #FF9E00;
+        }
+
+        .status-completed {
+            background: rgba(0,245,212,0.2);
+            color: #00F5D4;
+        }
+
+        .status-failed {
+            background: rgba(255,0,110,0.2);
+            color: #FF006E;
+        }
+
+        /* Modal */
         .modal-overlay {
             display: none;
             position: fixed;
@@ -390,6 +482,7 @@
             min-width: 100px;
         }
 
+        /* Toast */
         .toast {
             position: fixed;
             bottom: 30px;
@@ -454,39 +547,6 @@
             color: var(--text-secondary);
         }
 
-        .status-badge {
-            display: inline-block;
-            padding: 3px 12px;
-            border-radius: 20px;
-            font-size: 11px;
-            font-weight: 600;
-        }
-
-        .status-active {
-            background: rgba(0,245,212,0.2);
-            color: #00F5D4;
-        }
-
-        .status-banned {
-            background: rgba(255,0,110,0.2);
-            color: #FF006E;
-        }
-
-        .status-pending {
-            background: rgba(255,158,0,0.2);
-            color: #FF9E00;
-        }
-
-        .status-completed {
-            background: rgba(0,245,212,0.2);
-            color: #00F5D4;
-        }
-
-        .status-failed {
-            background: rgba(255,0,110,0.2);
-            color: #FF006E;
-        }
-
         .action-log {
             background: rgba(255,255,255,0.03);
             border-radius: 15px;
@@ -543,6 +603,10 @@
             .modal-btn-group {
                 flex-direction: column;
             }
+            .withdraw-sub-tabs {
+                flex-wrap: nowrap;
+                overflow-x: auto;
+            }
         }
 
         ::-webkit-scrollbar {
@@ -561,7 +625,7 @@
 
     <div class="admin-header">
         <h1>👑 INCOME ZONE</h1>
-        <p>Admin Control Panel v4.0 • Multi-Account Support</p>
+        <p>Admin Control Panel v5.0 • Withdraw Management</p>
         <span class="admin-badge">🔒 SECURE ADMIN</span>
     </div>
 
@@ -595,6 +659,7 @@
         <div class="admin-tab" data-tab="settings">⚙️ Settings</div>
     </div>
 
+    <!-- Users Tab -->
     <div class="tab-content active" id="users-tab">
         <div class="user-list">
             <input type="text" class="search-box" id="searchUser" placeholder="🔍 Search user by name or ID...">
@@ -607,18 +672,55 @@
         </div>
     </div>
 
+    <!-- Withdrawals Tab -->
     <div class="tab-content" id="withdrawals-tab">
         <div class="user-list">
-            <h3 style="margin-bottom: 15px;">💸 Withdrawal Requests</h3>
-            <div id="withdrawalsList">
-                <div class="empty-state">
-                    <i class="fas fa-inbox"></i>
-                    <p>No withdrawal requests</p>
+            <!-- Sub Tabs -->
+            <div class="withdraw-sub-tabs">
+                <div class="withdraw-sub-tab active" data-subtab="pending">
+                    📌 Pending <span class="count" id="pendingCount">0</span>
+                </div>
+                <div class="withdraw-sub-tab" data-subtab="approved">
+                    ✅ Approved <span class="count" id="approvedCount">0</span>
+                </div>
+                <div class="withdraw-sub-tab" data-subtab="rejected">
+                    ❌ Rejected <span class="count" id="rejectedCount">0</span>
+                </div>
+            </div>
+
+            <!-- Pending -->
+            <div class="withdraw-sub-content active" id="pending-sub">
+                <div id="pendingList">
+                    <div class="empty-state">
+                        <i class="fas fa-clock"></i>
+                        <p>No pending withdrawal requests</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Approved -->
+            <div class="withdraw-sub-content" id="approved-sub">
+                <div id="approvedList">
+                    <div class="empty-state">
+                        <i class="fas fa-check-circle"></i>
+                        <p>No approved withdrawals yet</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Rejected -->
+            <div class="withdraw-sub-content" id="rejected-sub">
+                <div id="rejectedList">
+                    <div class="empty-state">
+                        <i class="fas fa-times-circle"></i>
+                        <p>No rejected withdrawals yet</p>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- Logs Tab -->
     <div class="tab-content" id="logs-tab">
         <div class="user-list">
             <h3 style="margin-bottom: 15px;">📋 Admin Action Logs</h3>
@@ -631,6 +733,7 @@
         </div>
     </div>
 
+    <!-- Settings Tab -->
     <div class="tab-content" id="settings-tab">
         <div class="user-list">
             <div style="padding: 20px;">
@@ -697,7 +800,7 @@
         const BOT_TOKEN = "8252246058:AAE51zYPDXgnDdgOCCZh7_YwM6d2WyYsjaI";
         const ADMIN_CHAT_ID = "7694112804";
         const STORAGE_KEY = 'incomeZoneAdminData';
-        const USER_STORAGE_KEY_PREFIX = 'incomeZone4kData_'; // ✅ ইউজার অ্যাপের স্টোরেজ কী প্রিফিক্স
+        const USER_STORAGE_KEY_PREFIX = 'incomeZone4kData_';
 
         // ========== DATA STORE ==========
         let adminData = {
@@ -744,14 +847,10 @@
         // ========== SYNC USER DATA ==========
         function syncUserData() {
             try {
-                // ✅ সব ইউজার স্টোরেজ কী খুঁজুন
                 const allKeys = Object.keys(localStorage);
                 const userKeys = allKeys.filter(key => key.startsWith(USER_STORAGE_KEY_PREFIX));
                 
-                if (userKeys.length === 0) {
-                    // কোনো ইউজার নেই
-                    return;
-                }
+                if (userKeys.length === 0) return;
 
                 let updated = false;
 
@@ -763,7 +862,6 @@
                         const userData = JSON.parse(userDataRaw);
                         const userId = userData.telegramId || key.replace(USER_STORAGE_KEY_PREFIX, '');
 
-                        // ইউজার অ্যাডমিন ডেটাতে আপডেট করুন
                         if (!adminData.users[userId]) {
                             adminData.users[userId] = {
                                 name: userData.userName || 'User',
@@ -778,7 +876,6 @@
                             updated = true;
                         }
 
-                        // ডেটা আপডেট করুন
                         adminData.users[userId].name = userData.userName || adminData.users[userId].name;
                         adminData.users[userId].balance = userData.balance || 0;
                         adminData.users[userId].adsWatched = userData.adsWatched || 0;
@@ -871,39 +968,71 @@
             `).join('');
         }
 
+        // ========== RENDER WITHDRAWALS (নতুন) ==========
         function renderWithdrawals() {
-            const container = document.getElementById('withdrawalsList');
             const withdrawals = adminData.withdrawals;
+
+            // কাউন্ট আপডেট
+            const pending = withdrawals.filter(w => w.status === 'pending');
+            const approved = withdrawals.filter(w => w.status === 'completed');
+            const rejected = withdrawals.filter(w => w.status === 'failed');
+
+            document.getElementById('pendingCount').textContent = pending.length;
+            document.getElementById('approvedCount').textContent = approved.length;
+            document.getElementById('rejectedCount').textContent = rejected.length;
+
+            // Pending List
+            renderWithdrawSubList('pendingList', pending, 'pending');
             
-            if (withdrawals.length === 0) {
+            // Approved List
+            renderWithdrawSubList('approvedList', approved, 'completed');
+            
+            // Rejected List
+            renderWithdrawSubList('rejectedList', rejected, 'failed');
+        }
+
+        function renderWithdrawSubList(containerId, items, status) {
+            const container = document.getElementById(containerId);
+            
+            if (items.length === 0) {
+                const messages = {
+                    'pending': 'No pending withdrawal requests',
+                    'completed': 'No approved withdrawals yet',
+                    'failed': 'No rejected withdrawals yet'
+                };
                 container.innerHTML = `
                     <div class="empty-state">
-                        <i class="fas fa-inbox"></i>
-                        <p>No withdrawal requests</p>
+                        <i class="fas fa-${status === 'pending' ? 'clock' : status === 'completed' ? 'check-circle' : 'times-circle'}"></i>
+                        <p>${messages[status] || 'No items'}</p>
                     </div>
                 `;
                 return;
             }
 
-            container.innerHTML = withdrawals.map((w, index) => `
-                <div class="user-item">
-                    <div class="user-info">
-                        <div class="user-avatar">${w.userName?.[0]?.toUpperCase() || '?'}</div>
-                        <div class="user-details">
-                            <div class="user-name">${w.userName || 'Unknown'}</div>
-                            <div class="user-id">📱 ${w.bkashNumber} • ${new Date(w.date).toLocaleString()}</div>
+            container.innerHTML = items.map((w, index) => {
+                // আসল ইনডেক্স খুঁজুন (পুরো অ্যারেতে)
+                const realIndex = adminData.withdrawals.indexOf(w);
+                
+                return `
+                    <div class="user-item">
+                        <div class="user-info">
+                            <div class="user-avatar">${w.userName?.[0]?.toUpperCase() || '?'}</div>
+                            <div class="user-details">
+                                <div class="user-name">${w.userName || 'Unknown'}</div>
+                                <div class="user-id">📱 ${w.bkashNumber} • ${new Date(w.date).toLocaleString()}</div>
+                            </div>
+                        </div>
+                        <div class="user-balance">💰 ${w.amount.toLocaleString()}</div>
+                        <div class="user-actions">
+                            <span class="status-badge status-${w.status}">${w.status.toUpperCase()}</span>
+                            ${w.status === 'pending' ? `
+                                <button class="btn-sm btn-approve" onclick="approveWithdrawal(${realIndex})">✅</button>
+                                <button class="btn-sm btn-reject" onclick="rejectWithdrawal(${realIndex})">❌</button>
+                            ` : ''}
                         </div>
                     </div>
-                    <div class="user-balance">💰 ${w.amount.toLocaleString()}</div>
-                    <div class="user-actions">
-                        <span class="status-badge status-${w.status}">${w.status.toUpperCase()}</span>
-                        ${w.status === 'pending' ? `
-                            <button class="btn-sm btn-approve" onclick="approveWithdrawal(${index})">✅ Approve</button>
-                            <button class="btn-sm btn-reject" onclick="rejectWithdrawal(${index})">❌ Reject</button>
-                        ` : ''}
-                    </div>
-                </div>
-            `).join('');
+                `;
+            }).join('');
         }
 
         function renderLogs() {
@@ -987,10 +1116,8 @@
                 return;
             }
             
-            // ✅ অ্যাডমিন ডেটায় কয়েন যোগ করুন
             user.balance = (user.balance || 0) + amount;
             
-            // ✅ ইউজারের স্টোরেজ আপডেট করুন
             const userStorageKey = USER_STORAGE_KEY_PREFIX + currentUserId;
             try {
                 const userDataRaw = localStorage.getItem(userStorageKey);
@@ -999,16 +1126,12 @@
                     userData.balance = (userData.balance || 0) + amount;
                     localStorage.setItem(userStorageKey, JSON.stringify(userData));
                 }
-            } catch(e) {
-                console.error('Error updating user storage:', e);
-            }
+            } catch(e) {}
             
             saveData();
             addLog('balance_added', currentUserId, `Added ${amount} coins to ${user.name}`);
             renderAll();
             showToast(`✅ Added ${amount} coins to ${user.name}`, 'success');
-            
-            // Refresh modal
             openUserActions(currentUserId);
         }
 
@@ -1038,10 +1161,8 @@
                 return;
             }
             
-            // ✅ অ্যাডমিন ডেটা থেকে কয়েন কমান
             user.balance = (user.balance || 0) - amount;
             
-            // ✅ ইউজারের স্টোরেজ আপডেট করুন
             const userStorageKey = USER_STORAGE_KEY_PREFIX + currentUserId;
             try {
                 const userDataRaw = localStorage.getItem(userStorageKey);
@@ -1050,16 +1171,12 @@
                     userData.balance = (userData.balance || 0) - amount;
                     localStorage.setItem(userStorageKey, JSON.stringify(userData));
                 }
-            } catch(e) {
-                console.error('Error updating user storage:', e);
-            }
+            } catch(e) {}
             
             saveData();
             addLog('balance_removed', currentUserId, `Removed ${amount} coins from ${user.name}`);
             renderAll();
             showToast(`✅ Removed ${amount} coins from ${user.name}`, 'warning');
-            
-            // Refresh modal
             openUserActions(currentUserId);
         }
 
@@ -1081,8 +1198,6 @@
             addLog(user.banned ? 'user_banned' : 'user_unbanned', currentUserId, `${user.name} ${user.banned ? 'banned' : 'unbanned'}`);
             renderAll();
             showToast(`${user.banned ? '🚫 Banned' : '✅ Unbanned'} ${user.name}`, user.banned ? 'error' : 'success');
-            
-            // Refresh modal
             openUserActions(currentUserId);
         }
 
@@ -1099,6 +1214,9 @@
             renderAll();
             showToast(`✅ Approved ${w.amount} coins for ${w.userName}`, 'success');
             sendTelegramNotification(w, 'approved');
+            
+            // ✅ সুইচ করে দেখান (যদি পেন্ডিং ট্যাবে থাকে)
+            switchWithdrawSubTab('approved');
         }
 
         function rejectWithdrawal(index) {
@@ -1107,12 +1225,10 @@
             const w = adminData.withdrawals[index];
             if (!w) return;
             
-            // ✅ অ্যাডমিন ডেটায় কয়েন ফেরত দিন
             if (adminData.users[w.userId]) {
                 adminData.users[w.userId].balance = (adminData.users[w.userId].balance || 0) + w.amount;
             }
             
-            // ✅ ইউজারের স্টোরেজ আপডেট করুন
             const userStorageKey = USER_STORAGE_KEY_PREFIX + w.userId;
             try {
                 const userDataRaw = localStorage.getItem(userStorageKey);
@@ -1121,9 +1237,7 @@
                     userData.balance = (userData.balance || 0) + w.amount;
                     localStorage.setItem(userStorageKey, JSON.stringify(userData));
                 }
-            } catch(e) {
-                console.error('Error updating user storage:', e);
-            }
+            } catch(e) {}
             
             w.status = 'failed';
             saveData();
@@ -1131,6 +1245,24 @@
             renderAll();
             showToast(`❌ Rejected ${w.amount} coins for ${w.userName}`, 'error');
             sendTelegramNotification(w, 'rejected');
+            
+            // ✅ সুইচ করে দেখান (যদি পেন্ডিং ট্যাবে থাকে)
+            switchWithdrawSubTab('rejected');
+        }
+
+        // ========== WITHDRAW SUB TAB SWITCH ==========
+        function switchWithdrawSubTab(tab) {
+            document.querySelectorAll('.withdraw-sub-tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.withdraw-sub-content').forEach(c => c.classList.remove('active'));
+            
+            const tabMap = {
+                'pending': 'pending-sub',
+                'approved': 'approved-sub',
+                'rejected': 'rejected-sub'
+            };
+            
+            document.querySelector(`.withdraw-sub-tab[data-subtab="${tab}"]`).classList.add('active');
+            document.getElementById(tabMap[tab]).classList.add('active');
         }
 
         // ========== SETTINGS ==========
@@ -1181,7 +1313,8 @@
             }, 4000);
         }
 
-        // ========== TABS ==========
+        // ========== EVENT LISTENERS ==========
+        // Main Tabs
         document.querySelectorAll('.admin-tab').forEach(tab => {
             tab.addEventListener('click', function() {
                 document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
@@ -1192,10 +1325,18 @@
             });
         });
 
-        // ========== SEARCH ==========
+        // Withdraw Sub Tabs
+        document.querySelectorAll('.withdraw-sub-tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                const subtab = this.dataset.subtab;
+                switchWithdrawSubTab(subtab);
+            });
+        });
+
+        // Search
         document.getElementById('searchUser')?.addEventListener('input', renderUsers);
 
-        // ========== MODAL CLOSE ==========
+        // Modal Close
         document.querySelectorAll('.modal-overlay').forEach(modal => {
             modal.addEventListener('click', function(e) {
                 if (e.target === this) closeModal();
@@ -1208,15 +1349,16 @@
         // ========== INIT ==========
         loadData();
         syncUserData();
-        showToast('👋 Welcome Admin! Panel v4.0 with Multi-Account Support');
+        showToast('👋 Welcome Admin! Panel v5.0 with Withdraw Management');
 
-        // Load settings
         document.getElementById('minWithdraw').value = adminData.settings.minWithdraw || 10000;
         document.getElementById('adReward').value = adminData.settings.adReward || 10;
 
-        console.log('✅ Admin Panel v4.0 Loaded (Multi-Account Support)');
+        console.log('✅ Admin Panel v5.0 Loaded');
         console.log('📊 Total Users:', Object.keys(adminData.users).length);
         console.log('📤 Pending Withdrawals:', adminData.withdrawals.filter(w => w.status === 'pending').length);
+        console.log('✅ Approved Withdrawals:', adminData.withdrawals.filter(w => w.status === 'completed').length);
+        console.log('❌ Rejected Withdrawals:', adminData.withdrawals.filter(w => w.status === 'failed').length);
     </script>
 </body>
 </html>
