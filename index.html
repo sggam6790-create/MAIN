@@ -9,7 +9,9 @@
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     
     <style>
-        /* ========== CSS ========== */
+        /* ==========================================
+                   GLOBAL RESET & ROOT VARIABLES
+                   ========================================== */
         * {
             margin: 0;
             padding: 0;
@@ -20,16 +22,19 @@
             --primary: #FF006E;
             --secondary: #00F5D4;
             --bg-dark: #0a0a2a;
-            --bg-card: rgba(255,255,255,0.05);
-            --border-glass: rgba(255,255,255,0.1);
+            --bg-card: rgba(255, 255, 255, 0.05);
+            --border-glass: rgba(255, 255, 255, 0.1);
             --text-primary: #ffffff;
-            --text-secondary: rgba(255,255,255,0.7);
+            --text-secondary: rgba(255, 255, 255, 0.7);
             --gradient: linear-gradient(135deg, #FF006E, #FF9E00, #00F5D4, #00BBF9, #9B5DE5);
             --danger: #FF006E;
             --success: #00F5D4;
             --warning: #FF9E00;
         }
 
+        /* ==========================================
+                   BODY
+                   ========================================== */
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
             background: var(--bg-dark);
@@ -39,8 +44,11 @@
             background: radial-gradient(circle at 0% 0%, #0a0a2a, #050515);
         }
 
+        /* ==========================================
+                   HEADER
+                   ========================================== */
         .admin-header {
-            background: rgba(255,255,255,0.05);
+            background: rgba(255, 255, 255, 0.05);
             backdrop-filter: blur(20px);
             border-radius: 30px;
             padding: 25px;
@@ -74,6 +82,9 @@
             -webkit-text-fill-color: white;
         }
 
+        /* ==========================================
+                   STATS GRID
+                   ========================================== */
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
@@ -115,7 +126,9 @@
             margin-top: 5px;
         }
 
-        /* Main Tabs */
+        /* ==========================================
+                   MAIN TABS
+                   ========================================== */
         .admin-tabs {
             display: flex;
             gap: 10px;
@@ -149,6 +162,9 @@
             border-color: var(--secondary);
         }
 
+        /* ==========================================
+                   TAB CONTENT
+                   ========================================== */
         .tab-content {
             display: none;
             animation: fadeIn 0.4s ease;
@@ -159,10 +175,19 @@
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
+        /* ==========================================
+                   USER LIST
+                   ========================================== */
         .user-list {
             background: var(--bg-card);
             backdrop-filter: blur(20px);
@@ -172,7 +197,9 @@
             overflow-x: auto;
         }
 
-        /* Withdraw Sub Tabs */
+        /* ==========================================
+                   WITHDRAW SUB TABS
+                   ========================================== */
         .withdraw-sub-tabs {
             display: flex;
             gap: 10px;
@@ -182,7 +209,7 @@
 
         .withdraw-sub-tab {
             padding: 10px 20px;
-            background: rgba(255,255,255,0.03);
+            background: rgba(255, 255, 255, 0.03);
             border: 1px solid var(--border-glass);
             border-radius: 30px;
             cursor: pointer;
@@ -196,7 +223,7 @@
         }
 
         .withdraw-sub-tab .count {
-            background: rgba(255,255,255,0.1);
+            background: rgba(255, 255, 255, 0.1);
             padding: 1px 10px;
             border-radius: 20px;
             font-size: 11px;
@@ -210,14 +237,16 @@
         }
 
         .withdraw-sub-tab.active .count {
-            background: rgba(255,255,255,0.2);
+            background: rgba(255, 255, 255, 0.2);
         }
 
         .withdraw-sub-tab:hover:not(.active) {
             border-color: var(--secondary);
         }
 
-        /* Withdraw Sub Content */
+        /* ==========================================
+                   WITHDRAW SUB CONTENT
+                   ========================================== */
         .withdraw-sub-content {
             display: none;
             animation: fadeIn 0.3s ease;
@@ -227,13 +256,15 @@
             display: block;
         }
 
-        /* User Item */
+        /* ==========================================
+                   USER ITEM
+                   ========================================== */
         .user-item {
             display: flex;
             justify-content: space-between;
             align-items: center;
             padding: 15px 0;
-            border-bottom: 1px solid rgba(255,255,255,0.05);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
             flex-wrap: wrap;
             gap: 10px;
         }
@@ -244,15 +275,9 @@
 
         .user-item.banned {
             opacity: 0.5;
-            background: rgba(255,0,110,0.1);
+            background: rgba(255, 0, 110, 0.1);
             border-radius: 15px;
             padding: 15px;
-        }
-
-        .user-item.banned .user-name::after {
-            content: " 🚫 BANNED";
-            color: var(--danger);
-            font-size: 12px;
         }
 
         .user-info {
@@ -295,6 +320,9 @@
             flex-wrap: wrap;
         }
 
+        /* ==========================================
+                   BUTTONS
+                   ========================================== */
         .btn-sm {
             padding: 6px 14px;
             border: none;
@@ -345,11 +373,13 @@
         }
 
         .btn-close-modal {
-            background: rgba(255,255,255,0.1);
+            background: rgba(255, 255, 255, 0.1);
             color: white;
         }
 
-        /* Status Badge */
+        /* ==========================================
+                   STATUS BADGE
+                   ========================================== */
         .status-badge {
             display: inline-block;
             padding: 3px 12px;
@@ -359,31 +389,33 @@
         }
 
         .status-active {
-            background: rgba(0,245,212,0.2);
+            background: rgba(0, 245, 212, 0.2);
             color: #00F5D4;
         }
 
         .status-banned {
-            background: rgba(255,0,110,0.2);
+            background: rgba(255, 0, 110, 0.2);
             color: #FF006E;
         }
 
         .status-pending {
-            background: rgba(255,158,0,0.2);
+            background: rgba(255, 158, 0, 0.2);
             color: #FF9E00;
         }
 
         .status-completed {
-            background: rgba(0,245,212,0.2);
+            background: rgba(0, 245, 212, 0.2);
             color: #00F5D4;
         }
 
         .status-failed {
-            background: rgba(255,0,110,0.2);
+            background: rgba(255, 0, 110, 0.2);
             color: #FF006E;
         }
 
-        /* Modal */
+        /* ==========================================
+                   MODAL
+                   ========================================== */
         .modal-overlay {
             display: none;
             position: fixed;
@@ -391,7 +423,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.8);
+            background: rgba(0, 0, 0, 0.8);
             backdrop-filter: blur(10px);
             z-index: 1000;
             align-items: center;
@@ -416,8 +448,14 @@
         }
 
         @keyframes modalIn {
-            from { opacity: 0; transform: scale(0.9); }
-            to { opacity: 1; transform: scale(1); }
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
         }
 
         .modal-content h2 {
@@ -429,7 +467,7 @@
             display: flex;
             justify-content: space-between;
             padding: 10px 0;
-            border-bottom: 1px solid rgba(255,255,255,0.05);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
         }
 
         .modal-content .info-row .label {
@@ -454,7 +492,7 @@
         .modal-input-group input {
             width: 100%;
             padding: 12px 20px;
-            background: rgba(255,255,255,0.06);
+            background: rgba(255, 255, 255, 0.06);
             border: 1px solid var(--border-glass);
             border-radius: 30px;
             color: white;
@@ -465,7 +503,7 @@
 
         .modal-input-group input:focus {
             border-color: var(--secondary);
-            box-shadow: 0 0 20px rgba(0,245,212,0.2);
+            box-shadow: 0 0 20px rgba(0, 245, 212, 0.2);
         }
 
         .modal-btn-group {
@@ -482,13 +520,15 @@
             min-width: 100px;
         }
 
-        /* Toast */
+        /* ==========================================
+                   TOAST NOTIFICATION
+                   ========================================== */
         .toast {
             position: fixed;
             bottom: 30px;
             left: 50%;
             transform: translateX(-50%);
-            background: rgba(0,0,0,0.9);
+            background: rgba(0, 0, 0, 0.9);
             backdrop-filter: blur(20px);
             padding: 15px 30px;
             border-radius: 30px;
@@ -514,6 +554,9 @@
             border-color: var(--warning);
         }
 
+        /* ==========================================
+                   EMPTY STATE
+                   ========================================== */
         .empty-state {
             text-align: center;
             padding: 40px 20px;
@@ -526,10 +569,13 @@
             opacity: 0.3;
         }
 
+        /* ==========================================
+                   SEARCH BOX
+                   ========================================== */
         .search-box {
             width: 100%;
             padding: 12px 20px;
-            background: rgba(255,255,255,0.06);
+            background: rgba(255, 255, 255, 0.06);
             border: 1px solid var(--border-glass);
             border-radius: 30px;
             color: white;
@@ -547,8 +593,11 @@
             color: var(--text-secondary);
         }
 
+        /* ==========================================
+                   ACTION LOG
+                   ========================================== */
         .action-log {
-            background: rgba(255,255,255,0.03);
+            background: rgba(255, 255, 255, 0.03);
             border-radius: 15px;
             padding: 15px;
             margin-top: 10px;
@@ -558,7 +607,7 @@
 
         .log-item {
             padding: 8px 0;
-            border-bottom: 1px solid rgba(255,255,255,0.05);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
             font-size: 13px;
             color: var(--text-secondary);
         }
@@ -573,6 +622,9 @@
             font-weight: 600;
         }
 
+        /* ==========================================
+                   WITHDRAW COUNT BADGE
+                   ========================================== */
         .withdraw-count {
             background: var(--danger);
             color: white;
@@ -582,6 +634,9 @@
             margin-left: 5px;
         }
 
+        /* ==========================================
+                   RESPONSIVE
+                   ========================================== */
         @media (max-width: 600px) {
             .stats-grid {
                 grid-template-columns: 1fr 1fr;
@@ -609,11 +664,14 @@
             }
         }
 
+        /* ==========================================
+                   SCROLLBAR
+                   ========================================== */
         ::-webkit-scrollbar {
             width: 4px;
         }
         ::-webkit-scrollbar-track {
-            background: rgba(255,255,255,0.05);
+            background: rgba(255, 255, 255, 0.05);
         }
         ::-webkit-scrollbar-thumb {
             background: var(--gradient);
@@ -623,12 +681,18 @@
 </head>
 <body>
 
+    <!-- ==========================================
+    HEADER
+    ========================================== -->
     <div class="admin-header">
         <h1>👑 INCOME ZONE</h1>
         <p>Admin Control Panel v5.0 • Withdraw Management</p>
         <span class="admin-badge">🔒 SECURE ADMIN</span>
     </div>
 
+    <!-- ==========================================
+    STATS
+    ========================================== -->
     <div class="stats-grid" id="statsGrid">
         <div class="stat-card">
             <div class="icon">👤</div>
@@ -652,6 +716,9 @@
         </div>
     </div>
 
+    <!-- ==========================================
+    MAIN TABS
+    ========================================== -->
     <div class="admin-tabs">
         <div class="admin-tab active" data-tab="users">👥 Users</div>
         <div class="admin-tab" data-tab="withdrawals">💸 Withdrawals <span class="withdraw-count" id="withdrawCount">0</span></div>
@@ -659,7 +726,9 @@
         <div class="admin-tab" data-tab="settings">⚙️ Settings</div>
     </div>
 
-    <!-- Users Tab -->
+    <!-- ==========================================
+    USERS TAB
+    ========================================== -->
     <div class="tab-content active" id="users-tab">
         <div class="user-list">
             <input type="text" class="search-box" id="searchUser" placeholder="🔍 Search user by name or ID...">
@@ -672,7 +741,9 @@
         </div>
     </div>
 
-    <!-- Withdrawals Tab -->
+    <!-- ==========================================
+    WITHDRAWALS TAB
+    ========================================== -->
     <div class="tab-content" id="withdrawals-tab">
         <div class="user-list">
             <!-- Sub Tabs -->
@@ -720,7 +791,9 @@
         </div>
     </div>
 
-    <!-- Logs Tab -->
+    <!-- ==========================================
+    LOGS TAB
+    ========================================== -->
     <div class="tab-content" id="logs-tab">
         <div class="user-list">
             <h3 style="margin-bottom: 15px;">📋 Admin Action Logs</h3>
@@ -733,12 +806,14 @@
         </div>
     </div>
 
-    <!-- Settings Tab -->
+    <!-- ==========================================
+    SETTINGS TAB
+    ========================================== -->
     <div class="tab-content" id="settings-tab">
         <div class="user-list">
             <div style="padding: 20px;">
                 <h3 style="margin-bottom: 20px;">⚙️ Admin Settings</h3>
-                
+
                 <div style="margin-bottom: 20px;">
                     <label style="display: block; margin-bottom: 8px; color: var(--text-secondary);">Minimum Withdrawal</label>
                     <input type="number" id="minWithdraw" value="10000" style="width: 100%; padding: 12px 20px; background: var(--bg-card); border: 1px solid var(--border-glass); border-radius: 30px; color: white; font-size: 16px;">
@@ -762,16 +837,33 @@
         </div>
     </div>
 
-    <!-- User Action Modal -->
+    <!-- ==========================================
+    USER ACTION MODAL
+    ========================================== -->
     <div class="modal-overlay" id="userActionModal">
         <div class="modal-content">
             <h2 id="modalTitle">👤 User Actions</h2>
             <div id="modalContent">
-                <div class="info-row"><span class="label">Name</span><span class="value" id="modalName">-</span></div>
-                <div class="info-row"><span class="label">User ID</span><span class="value" id="modalId">-</span></div>
-                <div class="info-row"><span class="label">Balance</span><span class="value" id="modalBalance">-</span></div>
-                <div class="info-row"><span class="label">Ads Watched</span><span class="value" id="modalAds">-</span></div>
-                <div class="info-row"><span class="label">Status</span><span class="value" id="modalStatus">-</span></div>
+                <div class="info-row">
+                    <span class="label">Name</span>
+                    <span class="value" id="modalName">-</span>
+                </div>
+                <div class="info-row">
+                    <span class="label">User ID</span>
+                    <span class="value" id="modalId">-</span>
+                </div>
+                <div class="info-row">
+                    <span class="label">Balance</span>
+                    <span class="value" id="modalBalance">-</span>
+                </div>
+                <div class="info-row">
+                    <span class="label">Ads Watched</span>
+                    <span class="value" id="modalAds">-</span>
+                </div>
+                <div class="info-row">
+                    <span class="label">Status</span>
+                    <span class="value" id="modalStatus">-</span>
+                </div>
 
                 <div class="modal-input-group">
                     <label>➕ Add Coins</label>
@@ -793,16 +885,26 @@
         </div>
     </div>
 
+    <!-- ==========================================
+    TOAST NOTIFICATION
+    ========================================== -->
     <div class="toast" id="toast"></div>
 
+    <!-- ==========================================
+    JAVASCRIPT
+    ========================================== -->
     <script>
-        // ========== CONFIGURATION ==========
+        // ==========================================
+        // CONFIGURATION
+        // ==========================================
         const BOT_TOKEN = "8252246058:AAE51zYPDXgnDdgOCCZh7_YwM6d2WyYsjaI";
         const ADMIN_CHAT_ID = "7694112804";
         const STORAGE_KEY = 'incomeZoneAdminData';
         const USER_STORAGE_KEY_PREFIX = 'incomeZone4kData_';
 
-        // ========== DATA STORE ==========
+        // ==========================================
+        // DATA STORE
+        // ==========================================
         let adminData = {
             users: {},
             withdrawals: [],
@@ -815,21 +917,24 @@
 
         let currentUserId = null;
 
-        // ========== TELEGRAM ==========
+        // ==========================================
+        // TELEGRAM
+        // ==========================================
         let tg = window.Telegram?.WebApp;
         if (tg) {
             tg.expand();
             tg.enableClosingConfirmation();
         }
 
-        // ========== DATA FUNCTIONS ==========
+        // ==========================================
+        // DATA FUNCTIONS
+        // ==========================================
         function loadData() {
             const saved = localStorage.getItem(STORAGE_KEY);
             if (saved) {
                 try {
-                    const parsed = JSON.parse(saved);
-                    adminData = parsed;
-                } catch(e) {
+                    adminData = JSON.parse(saved);
+                } catch (e) {
                     console.error('Error loading admin data:', e);
                 }
             }
@@ -839,18 +944,32 @@
         function saveData() {
             try {
                 localStorage.setItem(STORAGE_KEY, JSON.stringify(adminData));
-            } catch(e) {
+            } catch (e) {
                 console.error('Error saving admin data:', e);
             }
         }
 
-        // ========== SYNC USER DATA ==========
+        // ==========================================
+        // SYNC USER DATA
+        // ==========================================
         function syncUserData() {
             try {
+                // First reload adminData from storage
+                const saved = localStorage.getItem(STORAGE_KEY);
+                if (saved) {
+                    try {
+                        adminData = JSON.parse(saved);
+                    } catch (e) {}
+                }
+
+                // Find all user storage keys
                 const allKeys = Object.keys(localStorage);
                 const userKeys = allKeys.filter(key => key.startsWith(USER_STORAGE_KEY_PREFIX));
-                
-                if (userKeys.length === 0) return;
+
+                if (userKeys.length === 0) {
+                    renderAll();
+                    return;
+                }
 
                 let updated = false;
 
@@ -862,6 +981,7 @@
                         const userData = JSON.parse(userDataRaw);
                         const userId = userData.telegramId || key.replace(USER_STORAGE_KEY_PREFIX, '');
 
+                        // Update or create user in admin data
                         if (!adminData.users[userId]) {
                             adminData.users[userId] = {
                                 name: userData.userName || 'User',
@@ -883,7 +1003,7 @@
                         adminData.users[userId].lastActive = new Date().toISOString();
                         updated = true;
 
-                    } catch(e) {
+                    } catch (e) {
                         console.error('Error syncing user from key:', key, e);
                     }
                 });
@@ -891,13 +1011,21 @@
                 if (updated) {
                     saveData();
                     renderAll();
+                    console.log('✅ Users synced, total:', Object.keys(adminData.users).length);
+                    console.log('📤 Pending withdrawals:', adminData.withdrawals.filter(w => w.status === 'pending')
+                    .length);
+                } else {
+                    renderAll();
                 }
-            } catch(e) {
+            } catch (e) {
                 console.error('Error syncing user data:', e);
+                renderAll();
             }
         }
 
-        // ========== LOG ==========
+        // ==========================================
+        // LOG
+        // ==========================================
         function addLog(action, userId, details) {
             adminData.logs.unshift({
                 action: action,
@@ -909,7 +1037,9 @@
             saveData();
         }
 
-        // ========== RENDER ==========
+        // ==========================================
+        // RENDER FUNCTIONS
+        // ==========================================
         function renderStats() {
             const users = Object.values(adminData.users);
             const totalUsers = users.length;
@@ -927,52 +1057,50 @@
         function renderUsers() {
             const container = document.getElementById('userList');
             const searchTerm = document.getElementById('searchUser')?.value?.toLowerCase() || '';
-            
+
             let users = Object.entries(adminData.users);
-            
+
             if (searchTerm) {
-                users = users.filter(([id, data]) => 
-                    data.name?.toLowerCase().includes(searchTerm) || 
+                users = users.filter(([id, data]) =>
+                    data.name?.toLowerCase().includes(searchTerm) ||
                     id.toLowerCase().includes(searchTerm)
                 );
             }
-            
+
             if (users.length === 0) {
                 container.innerHTML = `
-                    <div class="empty-state">
-                        <i class="fas fa-users"></i>
-                        <p>${searchTerm ? 'No users found matching "' + searchTerm + '"' : 'No users yet'}</p>
-                    </div>
-                `;
+                        <div class="empty-state">
+                            <i class="fas fa-users"></i>
+                            <p>${searchTerm ? 'No users found matching "' + searchTerm + '"' : 'No users yet'}</p>
+                        </div>
+                    `;
                 return;
             }
 
             container.innerHTML = users.map(([id, data]) => `
-                <div class="user-item ${data.banned ? 'banned' : ''}">
-                    <div class="user-info">
-                        <div class="user-avatar">${data.name?.[0]?.toUpperCase() || '?'}</div>
-                        <div class="user-details">
-                            <div class="user-name">${data.name || 'Unknown'} 
-                                <span class="status-badge ${data.banned ? 'status-banned' : 'status-active'}">
-                                    ${data.banned ? '🚫 BANNED' : '✅ ACTIVE'}
-                                </span>
+                    <div class="user-item ${data.banned ? 'banned' : ''}">
+                        <div class="user-info">
+                            <div class="user-avatar">${data.name?.[0]?.toUpperCase() || '?'}</div>
+                            <div class="user-details">
+                                <div class="user-name">${data.name || 'Unknown'} 
+                                    <span class="status-badge ${data.banned ? 'status-banned' : 'status-active'}">
+                                        ${data.banned ? '🚫 BANNED' : '✅ ACTIVE'}
+                                    </span>
+                                </div>
+                                <div class="user-id">🆔 ${id.substring(0, 12)}...</div>
                             </div>
-                            <div class="user-id">🆔 ${id.substring(0, 12)}...</div>
+                        </div>
+                        <div class="user-balance">💰 ${(data.balance || 0).toLocaleString()}</div>
+                        <div class="user-actions">
+                            <button class="btn-sm btn-edit" onclick="openUserActions('${id}')">⚡ Manage</button>
                         </div>
                     </div>
-                    <div class="user-balance">💰 ${(data.balance || 0).toLocaleString()}</div>
-                    <div class="user-actions">
-                        <button class="btn-sm btn-edit" onclick="openUserActions('${id}')">⚡ Manage</button>
-                    </div>
-                </div>
-            `).join('');
+                `).join('');
         }
 
-        // ========== RENDER WITHDRAWALS (নতুন) ==========
         function renderWithdrawals() {
             const withdrawals = adminData.withdrawals;
 
-            // কাউন্ট আপডেট
             const pending = withdrawals.filter(w => w.status === 'pending');
             const approved = withdrawals.filter(w => w.status === 'completed');
             const rejected = withdrawals.filter(w => w.status === 'failed');
@@ -981,19 +1109,14 @@
             document.getElementById('approvedCount').textContent = approved.length;
             document.getElementById('rejectedCount').textContent = rejected.length;
 
-            // Pending List
             renderWithdrawSubList('pendingList', pending, 'pending');
-            
-            // Approved List
             renderWithdrawSubList('approvedList', approved, 'completed');
-            
-            // Rejected List
             renderWithdrawSubList('rejectedList', rejected, 'failed');
         }
 
         function renderWithdrawSubList(containerId, items, status) {
             const container = document.getElementById(containerId);
-            
+
             if (items.length === 0) {
                 const messages = {
                     'pending': 'No pending withdrawal requests',
@@ -1001,61 +1124,59 @@
                     'failed': 'No rejected withdrawals yet'
                 };
                 container.innerHTML = `
-                    <div class="empty-state">
-                        <i class="fas fa-${status === 'pending' ? 'clock' : status === 'completed' ? 'check-circle' : 'times-circle'}"></i>
-                        <p>${messages[status] || 'No items'}</p>
-                    </div>
-                `;
+                        <div class="empty-state">
+                            <i class="fas fa-${status === 'pending' ? 'clock' : status === 'completed' ? 'check-circle' : 'times-circle'}"></i>
+                            <p>${messages[status] || 'No items'}</p>
+                        </div>
+                    `;
                 return;
             }
 
-            container.innerHTML = items.map((w, index) => {
-                // আসল ইনডেক্স খুঁজুন (পুরো অ্যারেতে)
+            container.innerHTML = items.map((w) => {
                 const realIndex = adminData.withdrawals.indexOf(w);
-                
                 return `
-                    <div class="user-item">
-                        <div class="user-info">
-                            <div class="user-avatar">${w.userName?.[0]?.toUpperCase() || '?'}</div>
-                            <div class="user-details">
-                                <div class="user-name">${w.userName || 'Unknown'}</div>
-                                <div class="user-id">📱 ${w.bkashNumber} • ${new Date(w.date).toLocaleString()}</div>
+                        <div class="user-item">
+                            <div class="user-info">
+                                <div class="user-avatar">${w.userName?.[0]?.toUpperCase() || '?'}</div>
+                                <div class="user-details">
+                                    <div class="user-name">${w.userName || 'Unknown'}</div>
+                                    <div class="user-id">📱 ${w.bkashNumber} • ${new Date(w.date).toLocaleString()}</div>
+                                </div>
+                            </div>
+                            <div class="user-balance">💰 ${w.amount.toLocaleString()}</div>
+                            <div class="user-actions">
+                                <span class="status-badge status-${w.status}">${w.status.toUpperCase()}</span>
+                                ${w.status === 'pending' ? `
+                                        <button class="btn-sm btn-approve" onclick="approveWithdrawal(${realIndex})">✅</button>
+                                        <button class="btn-sm btn-reject" onclick="rejectWithdrawal(${realIndex})">❌</button>
+                                    ` : ''}
                             </div>
                         </div>
-                        <div class="user-balance">💰 ${w.amount.toLocaleString()}</div>
-                        <div class="user-actions">
-                            <span class="status-badge status-${w.status}">${w.status.toUpperCase()}</span>
-                            ${w.status === 'pending' ? `
-                                <button class="btn-sm btn-approve" onclick="approveWithdrawal(${realIndex})">✅</button>
-                                <button class="btn-sm btn-reject" onclick="rejectWithdrawal(${realIndex})">❌</button>
-                            ` : ''}
-                        </div>
-                    </div>
-                `;
+                    `;
             }).join('');
         }
 
         function renderLogs() {
             const container = document.getElementById('actionLogs');
             const logs = adminData.logs;
-            
+
             if (logs.length === 0) {
                 container.innerHTML = `
-                    <div class="empty-state">
-                        <i class="fas fa-clock"></i>
-                        <p>No actions logged yet</p>
-                    </div>
-                `;
+                        <div class="empty-state">
+                            <i class="fas fa-clock"></i>
+                            <p>No actions logged yet</p>
+                        </div>
+                    `;
                 return;
             }
 
             container.innerHTML = logs.map(log => `
-                <div class="log-item">
-                    <span class="time">${new Date(log.time).toLocaleString()}</span>
-                    <span class="action">${log.action}</span>
-                    ${log.details ? `— ${log.details}` : ''}
-                </div>
-            `).join('');
+                    <div class="log-item">
+                        <span class="time">${new Date(log.time).toLocaleString()}</span>
+                        <span class="action">${log.action}</span>
+                        ${log.details ? `— ${log.details}` : ''}
+                    </div>
+                `).join('');
         }
 
         function renderAll() {
@@ -1065,7 +1186,9 @@
             renderLogs();
         }
 
-        // ========== USER ACTIONS ==========
+        // ==========================================
+        // USER ACTIONS
+        // ==========================================
         function openUserActions(userId) {
             currentUserId = userId;
             const user = adminData.users[userId];
@@ -1080,13 +1203,13 @@
             document.getElementById('modalBalance').textContent = (user.balance || 0).toLocaleString() + ' 🪙';
             document.getElementById('modalAds').textContent = user.adsWatched || 0;
             document.getElementById('modalStatus').innerHTML = user.banned ? '🚫 BANNED' : '✅ ACTIVE';
-            
+
             document.getElementById('banBtn').textContent = user.banned ? '✅ Unban User' : '🚫 Ban User';
             document.getElementById('banBtn').className = user.banned ? 'btn-sm btn-unban' : 'btn-sm btn-ban';
-            
+
             document.getElementById('addCoinsInput').value = '';
             document.getElementById('removeCoinsInput').value = '';
-            
+
             document.getElementById('userActionModal').classList.add('show');
         }
 
@@ -1095,29 +1218,33 @@
             currentUserId = null;
         }
 
-        // ========== ADD BALANCE ==========
+        // ==========================================
+        // ADD BALANCE
+        // ==========================================
         function addBalance() {
             const input = document.getElementById('addCoinsInput');
             const amount = parseInt(input.value);
-            
+
             if (!amount || amount <= 0) {
                 showToast('Please enter a valid amount (minimum 1)', 'error');
                 return;
             }
-            
+
             if (!currentUserId) {
                 showToast('No user selected', 'error');
                 return;
             }
-            
+
             const user = adminData.users[currentUserId];
             if (!user) {
                 showToast('User not found', 'error');
                 return;
             }
-            
+
+            // Add coins to admin data
             user.balance = (user.balance || 0) + amount;
-            
+
+            // Also update user app localStorage
             const userStorageKey = USER_STORAGE_KEY_PREFIX + currentUserId;
             try {
                 const userDataRaw = localStorage.getItem(userStorageKey);
@@ -1126,43 +1253,51 @@
                     userData.balance = (userData.balance || 0) + amount;
                     localStorage.setItem(userStorageKey, JSON.stringify(userData));
                 }
-            } catch(e) {}
-            
+            } catch (e) {
+                console.error('Error updating user storage:', e);
+            }
+
             saveData();
             addLog('balance_added', currentUserId, `Added ${amount} coins to ${user.name}`);
             renderAll();
             showToast(`✅ Added ${amount} coins to ${user.name}`, 'success');
+
+            // Refresh modal
             openUserActions(currentUserId);
         }
 
-        // ========== REMOVE BALANCE ==========
+        // ==========================================
+        // REMOVE BALANCE
+        // ==========================================
         function removeBalance() {
             const input = document.getElementById('removeCoinsInput');
             const amount = parseInt(input.value);
-            
+
             if (!amount || amount <= 0) {
                 showToast('Please enter a valid amount (minimum 1)', 'error');
                 return;
             }
-            
+
             if (!currentUserId) {
                 showToast('No user selected', 'error');
                 return;
             }
-            
+
             const user = adminData.users[currentUserId];
             if (!user) {
                 showToast('User not found', 'error');
                 return;
             }
-            
+
             if ((user.balance || 0) < amount) {
                 showToast(`❌ Insufficient balance! User has ${user.balance} coins`, 'error');
                 return;
             }
-            
+
+            // Remove coins from admin data
             user.balance = (user.balance || 0) - amount;
-            
+
+            // Also update user app localStorage
             const userStorageKey = USER_STORAGE_KEY_PREFIX + currentUserId;
             try {
                 const userDataRaw = localStorage.getItem(userStorageKey);
@@ -1171,64 +1306,74 @@
                     userData.balance = (userData.balance || 0) - amount;
                     localStorage.setItem(userStorageKey, JSON.stringify(userData));
                 }
-            } catch(e) {}
-            
+            } catch (e) {
+                console.error('Error updating user storage:', e);
+            }
+
             saveData();
             addLog('balance_removed', currentUserId, `Removed ${amount} coins from ${user.name}`);
             renderAll();
             showToast(`✅ Removed ${amount} coins from ${user.name}`, 'warning');
+
+            // Refresh modal
             openUserActions(currentUserId);
         }
 
-        // ========== TOGGLE BAN ==========
+        // ==========================================
+        // TOGGLE BAN
+        // ==========================================
         function toggleBan() {
             if (!currentUserId) {
                 showToast('No user selected', 'error');
                 return;
             }
-            
+
             const user = adminData.users[currentUserId];
             if (!user) {
                 showToast('User not found', 'error');
                 return;
             }
-            
+
             user.banned = !user.banned;
             saveData();
             addLog(user.banned ? 'user_banned' : 'user_unbanned', currentUserId, `${user.name} ${user.banned ? 'banned' : 'unbanned'}`);
             renderAll();
             showToast(`${user.banned ? '🚫 Banned' : '✅ Unbanned'} ${user.name}`, user.banned ? 'error' : 'success');
+
+            // Refresh modal
             openUserActions(currentUserId);
         }
 
-        // ========== WITHDRAWAL ACTIONS ==========
+        // ==========================================
+        // WITHDRAWAL ACTIONS
+        // ==========================================
         function approveWithdrawal(index) {
             if (!confirm('Approve this withdrawal?')) return;
-            
+
             const w = adminData.withdrawals[index];
             if (!w) return;
-            
+
             w.status = 'completed';
             saveData();
             addLog('withdrawal_approved', w.userId, `Approved ${w.amount} coins for ${w.userName}`);
             renderAll();
             showToast(`✅ Approved ${w.amount} coins for ${w.userName}`, 'success');
             sendTelegramNotification(w, 'approved');
-            
-            // ✅ সুইচ করে দেখান (যদি পেন্ডিং ট্যাবে থাকে)
             switchWithdrawSubTab('approved');
         }
 
         function rejectWithdrawal(index) {
             if (!confirm('Reject this withdrawal? Coins will be returned to user.')) return;
-            
+
             const w = adminData.withdrawals[index];
             if (!w) return;
-            
+
+            // Return coins to user in admin data
             if (adminData.users[w.userId]) {
                 adminData.users[w.userId].balance = (adminData.users[w.userId].balance || 0) + w.amount;
             }
-            
+
+            // Also update user app localStorage
             const userStorageKey = USER_STORAGE_KEY_PREFIX + w.userId;
             try {
                 const userDataRaw = localStorage.getItem(userStorageKey);
@@ -1237,48 +1382,54 @@
                     userData.balance = (userData.balance || 0) + w.amount;
                     localStorage.setItem(userStorageKey, JSON.stringify(userData));
                 }
-            } catch(e) {}
-            
+            } catch (e) {
+                console.error('Error updating user storage:', e);
+            }
+
             w.status = 'failed';
             saveData();
             addLog('withdrawal_rejected', w.userId, `Rejected ${w.amount} coins for ${w.userName}`);
             renderAll();
             showToast(`❌ Rejected ${w.amount} coins for ${w.userName}`, 'error');
             sendTelegramNotification(w, 'rejected');
-            
-            // ✅ সুইচ করে দেখান (যদি পেন্ডিং ট্যাবে থাকে)
             switchWithdrawSubTab('rejected');
         }
 
-        // ========== WITHDRAW SUB TAB SWITCH ==========
+        // ==========================================
+        // WITHDRAW SUB TAB SWITCH
+        // ==========================================
         function switchWithdrawSubTab(tab) {
             document.querySelectorAll('.withdraw-sub-tab').forEach(t => t.classList.remove('active'));
             document.querySelectorAll('.withdraw-sub-content').forEach(c => c.classList.remove('active'));
-            
+
             const tabMap = {
                 'pending': 'pending-sub',
                 'approved': 'approved-sub',
                 'rejected': 'rejected-sub'
             };
-            
+
             document.querySelector(`.withdraw-sub-tab[data-subtab="${tab}"]`).classList.add('active');
             document.getElementById(tabMap[tab]).classList.add('active');
         }
 
-        // ========== SETTINGS ==========
+        // ==========================================
+        // SETTINGS
+        // ==========================================
         function saveSettings() {
             const minWithdraw = parseInt(document.getElementById('minWithdraw').value);
             const adReward = parseInt(document.getElementById('adReward').value);
-            
+
             if (minWithdraw > 0) adminData.settings.minWithdraw = minWithdraw;
             if (adReward > 0) adminData.settings.adReward = adReward;
-            
+
             saveData();
             addLog('settings_updated', 'admin', 'Updated admin settings');
             showToast('✅ Settings saved!', 'success');
         }
 
-        // ========== TELEGRAM ==========
+        // ==========================================
+        // TELEGRAM NOTIFICATION
+        // ==========================================
         async function sendTelegramNotification(withdrawal, status) {
             const message = `📊 *WITHDRAWAL ${status.toUpperCase()}* 📊\n\n` +
                 `👤 *User:* ${withdrawal.userName || 'Unknown'}\n` +
@@ -1298,10 +1449,12 @@
                         parse_mode: 'Markdown'
                     })
                 });
-            } catch(e) {}
+            } catch (e) {}
         }
 
-        // ========== TOAST ==========
+        // ==========================================
+        // TOAST
+        // ==========================================
         function showToast(msg, type = 'success') {
             const toast = document.getElementById('toast');
             toast.textContent = msg;
@@ -1313,13 +1466,15 @@
             }, 4000);
         }
 
-        // ========== EVENT LISTENERS ==========
+        // ==========================================
+        // EVENT LISTENERS
+        // ==========================================
         // Main Tabs
         document.querySelectorAll('.admin-tab').forEach(tab => {
             tab.addEventListener('click', function() {
                 document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
                 document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-                
+
                 this.classList.add('active');
                 document.getElementById(this.dataset.tab + '-tab').classList.add('active');
             });
@@ -1328,8 +1483,7 @@
         // Withdraw Sub Tabs
         document.querySelectorAll('.withdraw-sub-tab').forEach(tab => {
             tab.addEventListener('click', function() {
-                const subtab = this.dataset.subtab;
-                switchWithdrawSubTab(subtab);
+                switchWithdrawSubTab(this.dataset.subtab);
             });
         });
 
@@ -1343,10 +1497,14 @@
             });
         });
 
-        // ========== AUTO SYNC ==========
-        setInterval(syncUserData, 5000);
+        // ==========================================
+        // AUTO SYNC
+        // ==========================================
+        setInterval(syncUserData, 3000);
 
-        // ========== INIT ==========
+        // ==========================================
+        // INITIALIZE
+        // ==========================================
         loadData();
         syncUserData();
         showToast('👋 Welcome Admin! Panel v5.0 with Withdraw Management');
