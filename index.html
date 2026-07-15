@@ -3,9 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>GUILD GLORY | Bot Nexus</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <title>INCOME ZONE | ADMIN PANEL</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    
     <style>
         * {
             margin: 0;
@@ -13,793 +15,788 @@
             box-sizing: border-box;
         }
 
+        :root {
+            --primary: #FF006E;
+            --secondary: #00F5D4;
+            --bg-dark: #0a0a2a;
+            --bg-card: rgba(255,255,255,0.05);
+            --border-glass: rgba(255,255,255,0.1);
+            --text-primary: #ffffff;
+            --text-secondary: rgba(255,255,255,0.7);
+            --gradient: linear-gradient(135deg, #FF006E, #FF9E00, #00F5D4, #00BBF9, #9B5DE5);
+        }
+
         body {
-            font-family: 'Inter', system-ui, sans-serif;
-            background: radial-gradient(ellipse at 30% 40%, #0b0a1a, #020108);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
             min-height: 100vh;
-            overflow-x: hidden;
-            position: relative;
+            padding: 20px;
+            background: radial-gradient(circle at 0% 0%, #0a0a2a, #050515);
         }
 
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(circle at 20% 50%, rgba(120, 60, 200, 0.15), transparent 60%),
-                        radial-gradient(circle at 80% 30%, rgba(255, 120, 50, 0.1), transparent 50%);
-            pointer-events: none;
-            z-index: 0;
-            animation: slowDrift 20s infinite alternate;
-        }
-
-        @keyframes slowDrift {
-            0% { opacity: 0.5; transform: scale(1); }
-            100% { opacity: 1; transform: scale(1.05); }
-        }
-
-        .welcome-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(circle at 30% 20%, #0a0a20, #020108);
-            z-index: 10000;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            backdrop-filter: blur(12px);
-            transition: all 0.6s cubic-bezier(0.2, 0.9, 0.4, 1.1);
-        }
-        .welcome-card {
-            text-align: center;
-            max-width: 550px;
-            padding: 3rem 2rem;
-            background: rgba(15, 25, 55, 0.55);
+        /* Admin Header */
+        .admin-header {
+            background: rgba(255,255,255,0.05);
             backdrop-filter: blur(20px);
-            border-radius: 72px;
-            border: 1px solid rgba(255, 180, 100, 0.5);
-            box-shadow: 0 0 80px rgba(255, 120, 50, 0.4), inset 0 1px 0 rgba(255,255,255,0.1);
-            animation: floatGlow 3s infinite ease;
+            border-radius: 30px;
+            padding: 25px;
+            border: 1px solid var(--border-glass);
+            margin-bottom: 25px;
+            text-align: center;
         }
-        @keyframes floatGlow {
-            0% { box-shadow: 0 0 30px rgba(255, 140, 70, 0.3), inset 0 1px 0 rgba(255,255,255,0.1); transform: scale(1);}
-            50% { box-shadow: 0 0 70px rgba(255, 140, 70, 0.6), inset 0 1px 0 rgba(255,255,255,0.2); transform: scale(1.01);}
-            100% { box-shadow: 0 0 30px rgba(255, 140, 70, 0.3), inset 0 1px 0 rgba(255,255,255,0.1); transform: scale(1);}
-        }
-        .welcome-icon {
-            font-size: 5rem;
-            color: #ffb05a;
-            filter: drop-shadow(0 0 20px #ff9040);
-            margin-bottom: 1rem;
-            animation: iconPulse 2s infinite;
-        }
-        @keyframes iconPulse {
-            0%, 100% { filter: drop-shadow(0 0 15px #ff9040); transform: scale(1); }
-            50% { filter: drop-shadow(0 0 30px #ffb05a); transform: scale(1.02); }
-        }
-        .welcome-card h1 {
-            font-size: 2.8rem;
+
+        .admin-header h1 {
+            font-size: 32px;
             font-weight: 800;
-            background: linear-gradient(135deg, #FFE8C0, #FFB85A, #FF9A3C);
-            background-clip: text;
+            background: var(--gradient);
             -webkit-background-clip: text;
-            color: transparent;
-            text-shadow: 0 2px 10px rgba(255,100,0,0.3);
-        }
-        .enter-btn {
-            background: linear-gradient(95deg, #ffb04a, #ff7a2c);
-            border: none;
-            padding: 14px 40px;
-            border-radius: 60px;
-            font-weight: 800;
-            font-size: 1.1rem;
-            margin-top: 20px;
-            cursor: pointer;
-            transition: all 0.3s;
-            box-shadow: 0 0 25px rgba(255, 100, 30, 0.6);
-        }
-        .enter-btn:hover {
-            transform: scale(1.03);
-            filter: brightness(1.08);
-            box-shadow: 0 0 35px rgba(255, 100, 30, 0.9);
-        }
-        .welcome-fadeout {
-            opacity: 0;
-            visibility: hidden;
-            pointer-events: none;
+            -webkit-text-fill-color: transparent;
         }
 
-        .main-app {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 2rem;
-            min-height: 100vh;
-            opacity: 0;
-            transition: opacity 0.6s ease;
-            position: relative;
-            z-index: 2;
+        .admin-header p {
+            color: var(--text-secondary);
+            font-size: 14px;
+            margin-top: 5px;
         }
-        .main-app.visible {
-            opacity: 1;
+
+        .admin-badge {
+            display: inline-block;
+            background: var(--gradient);
+            padding: 8px 20px;
+            border-radius: 30px;
+            font-size: 12px;
+            font-weight: 700;
+            margin-top: 10px;
+            -webkit-text-fill-color: white;
         }
-        .wizard-container {
-            max-width: 980px;
-            width: 100%;
-            background: rgba(8, 12, 30, 0.65);
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .stat-card {
+            background: var(--bg-card);
             backdrop-filter: blur(20px);
-            border-radius: 60px;
-            box-shadow: 0 40px 70px -25px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(255, 160, 70, 0.35), 0 0 50px rgba(255, 100, 0, 0.2);
-            overflow: hidden;
-            border: 1px solid rgba(255, 180, 100, 0.5);
-        }
-        .progress-section {
-            padding: 1.8rem 2rem 0 2rem;
-        }
-        
-        /* STEPS - সম্পূর্ণ সঠিকভাবে আলাদা এবং সেন্টার করা */
-        .steps {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            position: relative;
-            margin-bottom: 1.5rem;
-            width: 100%;
-            gap: 0.75rem;
-        }
-        .step {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            position: relative;
-            z-index: 2;
-            flex: 1;
+            border: 1px solid var(--border-glass);
+            border-radius: 25px;
+            padding: 20px;
             text-align: center;
-            min-width: 0;
+            transition: all 0.3s ease;
         }
-        .step-circle {
-            width: 52px;
-            height: 52px;
-            background: rgba(20, 28, 55, 0.9);
-            border: 2px solid #4a5a8a;
-            border-radius: 60px;
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--secondary);
+        }
+
+        .stat-card .icon {
+            font-size: 30px;
+            margin-bottom: 10px;
+        }
+
+        .stat-card .number {
+            font-size: 28px;
+            font-weight: 800;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .stat-card .label {
+            color: var(--text-secondary);
+            font-size: 12px;
+            margin-top: 5px;
+        }
+
+        /* Tabs */
+        .admin-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 25px;
+            overflow-x: auto;
+            padding-bottom: 5px;
+        }
+
+        .admin-tab {
+            padding: 12px 20px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-glass);
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            white-space: nowrap;
+            transition: all 0.3s ease;
+            color: var(--text-secondary);
+        }
+
+        .admin-tab.active {
+            background: var(--gradient);
+            border-color: transparent;
+            color: white;
+            -webkit-text-fill-color: white;
+        }
+
+        .admin-tab:hover:not(.active) {
+            border-color: var(--secondary);
+        }
+
+        /* Content */
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Table / User List */
+        .user-list {
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border-glass);
+            border-radius: 25px;
+            padding: 20px;
+            overflow-x: auto;
+        }
+
+        .user-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .user-item:last-child {
+            border-bottom: none;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: var(--gradient);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-weight: 800;
-            font-size: 1.3rem;
-            color: #aab5e0;
-            transition: all 0.4s;
-            margin: 0 auto;
+            font-weight: 700;
+            font-size: 18px;
         }
-        .step.active .step-circle {
-            background: linear-gradient(145deg, #ffb04a, #ff8a2e);
-            border-color: #ffcc88;
-            color: #0a0a1a;
-            box-shadow: 0 0 30px rgba(255, 140, 70, 0.8);
+
+        .user-details .name {
+            font-weight: 600;
+        }
+
+        .user-details .id {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .user-balance {
+            font-weight: 700;
+            color: var(--secondary);
+        }
+
+        /* Withdraw Requests */
+        .withdraw-request {
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border-glass);
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .withdraw-request:hover {
+            border-color: var(--secondary);
+        }
+
+        .withdraw-request .top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .withdraw-request .amount {
+            font-size: 24px;
+            font-weight: 800;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .withdraw-request .status {
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .status-pending {
+            background: rgba(255, 158, 0, 0.2);
+            color: #FF9E00;
+        }
+
+        .status-completed {
+            background: rgba(0, 245, 212, 0.2);
+            color: #00F5D4;
+        }
+
+        .status-failed {
+            background: rgba(255, 0, 110, 0.2);
+            color: #FF006E;
+        }
+
+        .withdraw-request .details {
+            color: var(--text-secondary);
+            font-size: 13px;
+        }
+
+        .withdraw-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .btn-sm {
+            padding: 8px 20px;
+            border: none;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-approve {
+            background: linear-gradient(135deg, #00F5D4, #00BBF9);
+            color: #0a0a2a;
+        }
+
+        .btn-reject {
+            background: linear-gradient(135deg, #FF006E, #FF9E00);
+            color: white;
+        }
+
+        .btn-sm:hover {
             transform: scale(1.05);
         }
-        .step.completed .step-circle {
-            background: #00c86a;
-            border-color: #88ffaa;
-            color: white;
-            box-shadow: 0 0 20px #00ffaa80;
-        }
-        .step-label {
-            margin-top: 12px;
-            font-size: 0.7rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            color: #9aa9dd;
-            text-align: center;
-            white-space: nowrap;
-        }
-        .step.active .step-label {
-            color: #ffb85a;
-            text-shadow: 0 0 8px rgba(255, 140, 70, 0.5);
-        }
-        .progress-line {
-            position: absolute;
-            top: 26px;
-            left: 12%;
-            width: 76%;
-            height: 3px;
-            background: #1e2a4a;
-            z-index: 1;
-            border-radius: 4px;
-        }
-        .progress-fill {
-            position: absolute;
-            top: 0;
-            left: 0;
-            height: 100%;
-            background: linear-gradient(90deg, #ffb04a, #ff6a1a, #ffb04a);
-            width: 0%;
-            transition: width 0.35s ease;
-            border-radius: 4px;
-            box-shadow: 0 0 12px #ff7a2c;
-        }
-        
-        /* ছোট স্ক্রিনের জন্য রেসপন্সিভ */
-        @media (max-width: 580px) {
-            .progress-section {
-                padding: 1.2rem 1rem 0 1rem;
-            }
-            .step-circle {
-                width: 42px;
-                height: 42px;
-                font-size: 1rem;
-            }
-            .step-label {
-                font-size: 0.55rem;
-                letter-spacing: 0.3px;
-                white-space: normal;
-                word-break: keep-all;
-            }
-            .progress-line {
-                top: 21px;
-                left: 10%;
-                width: 80%;
-            }
-            .steps {
-                gap: 0.3rem;
-            }
-        }
-        
-        @media (max-width: 450px) {
-            .step-label {
-                font-size: 0.5rem;
-            }
-            .step-circle {
-                width: 36px;
-                height: 36px;
-                font-size: 0.85rem;
-            }
-            .progress-line {
-                top: 18px;
-            }
-        }
-        
-        .step-content {
-            padding: 1rem 2rem 2rem 2rem;
-            min-height: 500px;
-            display: flex;
-            flex-direction: column;
-        }
-        .step-panel {
+
+        /* Modal */
+        .modal-overlay {
             display: none;
-            animation: fadeSlideUp 0.4s ease-out;
-        }
-        .step-panel.active-panel {
-            display: block;
-        }
-        @keyframes fadeSlideUp {
-            from { opacity: 0; transform: translateY(20px);}
-            to { opacity: 1; transform: translateY(0);}
-        }
-        .panel-title {
-            font-size: 1.7rem;
-            font-weight: 800;
-            background: linear-gradient(135deg, #FFE8C0, #FFB85A, #FF9A3C);
-            background-clip: text;
-            -webkit-background-clip: text;
-            color: transparent;
-            text-align: center;
-        }
-        .panel-sub {
-            text-align: center;
-            font-size: 0.85rem;
-            margin-bottom: 0.5rem;
-            color: #b7c3f0;
-        }
-        
-        .grid-select {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(160px, 200px));
-            gap: 1.5rem;
-            margin: 2rem auto;
-            justify-content: center;
-            align-items: center;
-            width: 100%;
-            max-width: 750px;
-        }
-        .option-card {
-            background: rgba(12, 18, 40, 0.85);
-            backdrop-filter: blur(8px);
-            border-radius: 32px;
-            padding: 1.2rem 0.8rem;
-            text-align: center;
-            cursor: pointer;
-            border: 1px solid #3a4870;
-            transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
-            font-weight: 700;
-            color: #d0e0ff;
-            width: 100%;
-            position: relative;
-            overflow: hidden;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        }
-        .option-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,180,80,0.2), transparent);
-            transition: left 0.4s;
-        }
-        .option-card:hover::before {
-            left: 100%;
-        }
-        .option-card i {
-            font-size: 2rem;
-            display: block;
-            margin-bottom: 10px;
-            color: #ffaa66;
-            transition: transform 0.2s;
-        }
-        .option-card:hover i {
-            transform: scale(1.08);
-        }
-        .option-card.selected {
-            background: linear-gradient(145deg, rgba(255, 170, 70, 0.3), rgba(255, 100, 30, 0.25));
-            border: 2px solid #ffb04a;
-            box-shadow: 0 0 28px rgba(255, 140, 70, 0.7);
-            color: #fff0cc;
-        }
-        .input-group-modern {
-            margin: 1.5rem 0;
-        }
-        .input-group-modern input {
-            width: 100%;
-            padding: 16px 24px;
-            background: rgba(0, 0, 0, 0.5);
-            border: 1.5px solid #3a4a70;
-            border-radius: 60px;
-            font-size: 0.95rem;
-            color: #f0f5ff;
-            font-weight: 500;
-            transition: all 0.3s;
-        }
-        .input-group-modern input:focus {
-            outline: none;
-            border-color: #ffb04a;
-            box-shadow: 0 0 0 4px rgba(255, 160, 70, 0.25);
-        }
-        .nav-buttons {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 2rem;
-        }
-        .btn-next, .btn-prev, .btn-deploy {
-            padding: 14px 32px;
-            border-radius: 60px;
-            font-weight: 700;
-            border: none;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        .btn-prev {
-            background: #1e2a4a;
-            color: #ccddf8;
-            border: 1px solid #4a5a8a;
-        }
-        .btn-prev:hover {
-            background: #2a3a60;
-            transform: translateX(-3px);
-        }
-        .btn-next {
-            background: linear-gradient(95deg, #ffb04a, #ff7a2c);
-            color: #0a0a1a;
-            font-weight: 800;
-            box-shadow: 0 5px 15px rgba(255, 100, 30, 0.3);
-        }
-        .btn-next:hover {
-            transform: translateX(3px);
-            filter: brightness(1.05);
-        }
-        .btn-deploy {
-            background: linear-gradient(95deg, #00d86a, #00aa50);
-            color: #0a1a1a;
-            font-weight: 800;
-            box-shadow: 0 0 20px #00ffaa80;
-        }
-        .btn-deploy:hover {
-            transform: scale(1.02);
-            filter: brightness(1.08);
-        }
-        .terminal-modal {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.96);
-            backdrop-filter: blur(25px);
-            z-index: 10001;
-            display: flex;
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
             align-items: center;
             justify-content: center;
-            visibility: hidden;
-            opacity: 0;
-            transition: 0.25s;
-        }
-        .terminal-modal.active {
-            visibility: visible;
-            opacity: 1;
-        }
-        .terminal-card {
-            background: #050a1a;
-            border-radius: 52px;
-            padding: 2rem;
-            width: 90%;
-            max-width: 600px;
-            border: 2px solid #ffb04a;
-            box-shadow: 0 0 80px rgba(255, 140, 70, 0.5);
-        }
-        .terminal-logs {
-            font-family: 'Courier New', monospace;
-            color: #aaffdd;
-            max-height: 360px;
-            overflow-y: auto;
-            font-size: 0.8rem;
-            background: #010208;
-            border-radius: 24px;
-            padding: 1rem;
-        }
-        .homepage-redirect-btn {
-            background: linear-gradient(95deg, #ffb04a, #ff7a2c);
-            border: none;
-            padding: 14px 24px;
-            border-radius: 60px;
-            font-weight: 800;
-            margin-top: 24px;
-            width: 100%;
-            cursor: pointer;
-            font-size: 1rem;
-        }
-        footer {
-            background: rgba(2, 6, 20, 0.7);
-            padding: 1rem;
-            text-align: center;
-            font-size: 0.65rem;
-            color: #8a98c0;
-            border-top: 1px solid #2a3a60;
+            padding: 20px;
         }
 
-        .summary-card {
-            background: rgba(12, 18, 40, 0.85);
-            border-radius: 38px;
-            padding: 1.8rem;
-            margin: 1.5rem 0;
-            border: 1px solid rgba(255, 180, 100, 0.5);
-            backdrop-filter: blur(12px);
-        }
-        .summary-header {
+        .modal-overlay.show {
             display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 1.8rem;
-            padding-bottom: 1rem;
-            border-bottom: 1px solid rgba(255, 180, 100, 0.4);
         }
-        .summary-header i {
-            font-size: 1.8rem;
-            color: #ffb04a;
-            background: rgba(255, 140, 70, 0.2);
-            padding: 10px;
-            border-radius: 22px;
+
+        .modal-content {
+            background: #1a1a3a;
+            border-radius: 30px;
+            padding: 30px;
+            max-width: 500px;
+            width: 100%;
+            border: 1px solid var(--border-glass);
+            animation: modalIn 0.4s ease;
         }
-        .summary-header h3 {
-            font-size: 1.3rem;
+
+        @keyframes modalIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .modal-content h2 {
+            margin-bottom: 15px;
+        }
+
+        .modal-content .info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .modal-close {
+            margin-top: 20px;
+            padding: 12px;
+            width: 100%;
+            border: none;
+            border-radius: 30px;
+            background: var(--gradient);
+            color: white;
             font-weight: 700;
-            color: #f0f3ff;
+            cursor: pointer;
         }
-        .summary-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 1.2rem;
-            margin-bottom: 1.5rem;
-        }
-        .summary-item {
-            background: rgba(0, 0, 0, 0.45);
-            border-radius: 24px;
-            padding: 1rem 1.2rem;
-            transition: all 0.2s;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-        }
-        .summary-item:hover {
-            border-color: rgba(255, 180, 100, 0.4);
-            background: rgba(0, 0, 0, 0.6);
-            transform: translateY(-2px);
-        }
-        .summary-label {
-            font-size: 0.7rem;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
+
+        /* Notification */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.9);
+            backdrop-filter: blur(20px);
+            padding: 15px 30px;
+            border-radius: 30px;
+            border: 1px solid var(--border-glass);
+            color: white;
             font-weight: 600;
-            color: #aab5e5;
-            margin-bottom: 0.5rem;
-            display: flex;
-            align-items: center;
-            gap: 6px;
+            z-index: 2000;
+            display: none;
+            animation: fadeIn 0.3s ease;
         }
-        .summary-value {
-            font-size: 1.2rem;
-            font-weight: 700;
-            color: #ffe0aa;
-            word-break: break-word;
-            font-family: 'Monaco', 'Menlo', monospace;
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-secondary);
         }
-        .token-mask {
-            font-family: monospace;
-            font-size: 1rem;
-            letter-spacing: 2px;
-            color: #b8c5ff;
+
+        .empty-state i {
+            font-size: 50px;
+            margin-bottom: 15px;
+            opacity: 0.3;
         }
-        .security-badge {
-            background: rgba(0, 230, 118, 0.15);
-            border-radius: 40px;
-            padding: 0.5rem 1rem;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 0.7rem;
-            font-weight: 500;
-            color: #88ffaa;
-            border: 1px solid rgba(100, 255, 150, 0.4);
-        }
-        
+
+        /* Responsive */
         @media (max-width: 600px) {
-            .step-content { padding: 1rem 1.2rem; }
-            .summary-grid { grid-template-columns: 1fr; }
-            .summary-card { padding: 1.2rem; }
-            .panel-title { font-size: 1.4rem; }
-            .grid-select {
-                grid-template-columns: repeat(2, 1fr);
-                gap: 0.8rem;
+            .stats-grid {
+                grid-template-columns: 1fr 1fr;
             }
+            .admin-header h1 {
+                font-size: 24px;
+            }
+            .user-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+            .withdraw-request .top {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 4px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(255,255,255,0.05);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--gradient);
+            border-radius: 10px;
         }
     </style>
 </head>
 <body>
 
-<div class="welcome-overlay" id="welcomeScreen">
-    <div class="welcome-card">
-        <div class="welcome-icon"><i class="fas fa-crown"></i></div>
-        <h1>GUILD GLORY BOT</h1>
-        <button class="enter-btn" id="enterDashboardBtn"><i class="fas fa-arrow-right"></i> ENTER GUILD GLORY BOT</button>
+    <!-- Header -->
+    <div class="admin-header">
+        <h1>👑 INCOME ZONE</h1>
+        <p>Admin Control Panel • v2.0</p>
+        <span class="admin-badge">🔒 SECURE ADMIN</span>
     </div>
-</div>
 
-<div class="main-app" id="mainApp">
-    <div class="wizard-container">
-        <div class="progress-section">
-            <div class="steps">
-                <div class="step" id="step1Indicator">
-                    <div class="step-circle">1</div>
-                    <div class="step-label">REGION</div>
-                </div>
-                <div class="step" id="step2Indicator">
-                    <div class="step-circle">2</div>
-                    <div class="step-label">BOT</div>
-                </div>
-                <div class="step" id="step3Indicator">
-                    <div class="step-circle">3</div>
-                    <div class="step-label">CREDENTIALS</div>
-                </div>
-                <div class="step" id="step4Indicator">
-                    <div class="step-circle">4</div>
-                    <div class="step-label">CONFIRM</div>
-                </div>
-                <div class="progress-line"><div class="progress-fill" id="progressFill"></div></div>
+    <!-- Stats -->
+    <div class="stats-grid" id="statsGrid">
+        <div class="stat-card">
+            <div class="icon">👤</div>
+            <div class="number" id="totalUsers">0</div>
+            <div class="label">Total Users</div>
+        </div>
+        <div class="stat-card">
+            <div class="icon">💰</div>
+            <div class="number" id="totalBalance">0</div>
+            <div class="label">Total Coins</div>
+        </div>
+        <div class="stat-card">
+            <div class="icon">📤</div>
+            <div class="number" id="pendingWithdrawals">0</div>
+            <div class="label">Pending Withdrawals</div>
+        </div>
+        <div class="stat-card">
+            <div class="icon">✅</div>
+            <div class="number" id="completedWithdrawals">0</div>
+            <div class="label">Completed</div>
+        </div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="admin-tabs">
+        <div class="admin-tab active" data-tab="users">👥 Users</div>
+        <div class="admin-tab" data-tab="withdrawals">💸 Withdrawals</div>
+        <div class="admin-tab" data-tab="settings">⚙️ Settings</div>
+    </div>
+
+    <!-- Users Tab -->
+    <div class="tab-content active" id="users-tab">
+        <div class="user-list" id="userList">
+            <div class="empty-state">
+                <i class="fas fa-users"></i>
+                <p>Loading users...</p>
             </div>
         </div>
-        
-        <div class="step-content">
-            <div class="step-panel" id="step1Panel">
-                <div style="text-align: center;">
-                    <h2 class="panel-title"><i class="fas fa-globe-asia"></i> Select Region Server</h2>
-                    <p class="panel-sub">Guild routing node · low latency military grade</p>
-                </div>
-                <div class="grid-select" id="serverGrid">
-                    <div class="option-card" data-server="bangladesh"><i class="fas fa-map-pin"></i> 🇧🇩 BANGLADESH</div>
-                    <div class="option-card" data-server="nepal"><i class="fas fa-map-pin"></i> 🇳🇵 NEPAL</div>
-                    <div class="option-card" data-server="india"><i class="fas fa-map-pin"></i> 🇮🇳 INDIA</div>
-                    <div class="option-card" data-server="pakistan"><i class="fas fa-map-pin"></i> 🇵🇰 PAKISTAN</div>
-                    <div class="option-card" data-server="srilanka"><i class="fas fa-map-pin"></i> 🇱🇰 SRI LANKA</div>
-                    <div class="option-card" data-server="indonesia"><i class="fas fa-map-pin"></i> 🇮🇩 INDONESIA</div>
-                </div>
-                <div class="nav-buttons"><div></div><button class="btn-next" id="nextStep1">Next Step <i class="fas fa-arrow-right"></i></button></div>
+    </div>
+
+    <!-- Withdrawals Tab -->
+    <div class="tab-content" id="withdrawals-tab">
+        <div id="withdrawalsList">
+            <div class="empty-state">
+                <i class="fas fa-inbox"></i>
+                <p>No withdrawal requests</p>
             </div>
-            <div class="step-panel" id="step2Panel">
-                <div style="text-align: center;">
-                    <h2 class="panel-title"><i class="fas fa-robot"></i> Select Bot Unit</h2>
-                    <p class="panel-sub">Neural capacity & processing power</p>
+        </div>
+    </div>
+
+    <!-- Settings Tab -->
+    <div class="tab-content" id="settings-tab">
+        <div class="user-list">
+            <div style="padding: 20px;">
+                <h3 style="margin-bottom: 20px;">⚙️ Admin Settings</h3>
+                
+                <div style="margin-bottom: 20px;">
+                    <label style="display: block; margin-bottom: 8px; color: var(--text-secondary);">Minimum Withdrawal</label>
+                    <input type="number" id="minWithdraw" value="10000" style="width: 100%; padding: 12px 20px; background: var(--bg-card); border: 1px solid var(--border-glass); border-radius: 30px; color: white; font-size: 16px;">
                 </div>
-                <div class="grid-select" id="botGrid">
-                    <div class="option-card" data-bot="BOT-1"><i class="fas fa-microchip"></i> BOT-1 · PRO</div>
-                    <div class="option-card" data-bot="BOT-2"><i class="fas fa-bolt"></i> BOT-2 · ELITE</div>
-                    <div class="option-card" data-bot="BOT-3"><i class="fas fa-gem"></i> BOT-3 · DIAMOND</div>
-                    <div class="option-card" data-bot="BOT-4"><i class="fas fa-crown"></i> BOT-4 · LEGENDARY</div>
+
+                <div style="margin-bottom: 20px;">
+                    <label style="display: block; margin-bottom: 8px; color: var(--text-secondary);">Reward Per Ad</label>
+                    <input type="number" id="adReward" value="10" style="width: 100%; padding: 12px 20px; background: var(--bg-card); border: 1px solid var(--border-glass); border-radius: 30px; color: white; font-size: 16px;">
                 </div>
-                <div class="nav-buttons"><button class="btn-prev" id="prevStep2"><i class="fas fa-arrow-left"></i> Back</button><button class="btn-next" id="nextStep2">Next <i class="fas fa-arrow-right"></i></button></div>
-            </div>
-            <div class="step-panel" id="step3Panel">
-                <h2 class="panel-title"><i class="fas fa-key"></i> Guild Credentials</h2>
-                <p class="panel-sub">Encrypted handshake · mainframe access</p>
-                <div class="input-group-modern"><input type="text" id="guildId" placeholder="🏰 Guild ID *"></div>
-                <div class="input-group-modern"><input type="text" id="guestToken" placeholder="🔑 Guest Access Token *"></div>
-                <div class="input-group-modern"><input type="password" id="password" placeholder="🔒 Encrypted Password *"></div>
-                <div class="nav-buttons"><button class="btn-prev" id="prevStep3"><i class="fas fa-arrow-left"></i> Back</button><button class="btn-next" id="nextStep3">Review & Confirm</button></div>
-            </div>
-            <div class="step-panel" id="step4Panel">
-                <h2 class="panel-title"><i class="fas fa-check-shield"></i> Deployment Summary</h2>
-                <div class="summary-card">
-                    <div class="summary-header">
-                        <i class="fas fa-cloud-upload-alt"></i>
-                        <h3>Bot Activation Review</h3>
-                    </div>
-                    <div class="summary-grid">
-                        <div class="summary-item">
-                            <div class="summary-label"><i class="fas fa-globe-americas"></i> REGION NODE</div>
-                            <div class="summary-value" id="confirmServer">—</div>
-                        </div>
-                        <div class="summary-item">
-                            <div class="summary-label"><i class="fas fa-microchip"></i> BOT UNIT</div>
-                            <div class="summary-value" id="confirmBot">—</div>
-                        </div>
-                        <div class="summary-item">
-                            <div class="summary-label"><i class="fas fa-id-card"></i> GUILD IDENTIFIER</div>
-                            <div class="summary-value" id="confirmGuild">—</div>
-                        </div>
-                        <div class="summary-item">
-                            <div class="summary-label"><i class="fas fa-key"></i> ACCESS TOKEN</div>
-                            <div class="summary-value token-mask">••••••••••••••••</div>
-                        </div>
-                    </div>
-                    <div class="security-badge">
-                        <i class="fas fa-lock"></i> END-TO-END ENCRYPTED · 512-BIT SSL
-                    </div>
-                </div>
-                <div class="nav-buttons">
-                    <button class="btn-prev" id="prevStep4"><i class="fas fa-arrow-left"></i> Back</button>
-                    <button class="btn-deploy" id="finalDeployBtn"><i class="fas fa-rocket"></i> ACTIVATE BOT</button>
+
+                <button onclick="saveSettings()" style="width: 100%; padding: 15px; border: none; border-radius: 30px; background: var(--gradient); color: white; font-weight: 700; font-size: 16px; cursor: pointer;">
+                    💾 Save Settings
+                </button>
+
+                <div style="margin-top: 20px; padding: 15px; background: rgba(255,0,110,0.1); border-radius: 20px; border-left: 4px solid #FF006E;">
+                    <p style="font-size: 13px; color: var(--text-secondary);">
+                        <strong>⚠️ Note:</strong> All data is stored locally. For production, use a backend server.
+                    </p>
                 </div>
             </div>
         </div>
-        <footer><i class="fas fa-shield-haltered"></i> 512-bit SSL · Guild Glory Mainframe · Neural Uplink Active</footer>
     </div>
-</div>
 
-<div id="terminalModal" class="terminal-modal">
-    <div class="terminal-card">
-        <div class="terminal-logs" id="terminalLogs"></div>
-        <div style="margin-top: 18px; text-align: center; color:#ffb85a; font-size:0.8rem;">
-            <i class="fas fa-clock"></i> Please wait up to 5 hours for final confirmation.
+    <!-- User Detail Modal -->
+    <div class="modal-overlay" id="userModal">
+        <div class="modal-content">
+            <h2>👤 User Details</h2>
+            <div id="userDetailContent">
+                <div class="info-row"><span>Name</span><span id="modalName">-</span></div>
+                <div class="info-row"><span>User ID</span><span id="modalId">-</span></div>
+                <div class="info-row"><span>Balance</span><span id="modalBalance">-</span></div>
+                <div class="info-row"><span>Ads Watched</span><span id="modalAds">-</span></div>
+                <div class="info-row"><span>Join Date</span><span id="modalDate">-</span></div>
+            </div>
+            <button class="modal-close" onclick="closeModal('userModal')">Close</button>
         </div>
-        <button id="modalHomeBtn" class="homepage-redirect-btn"><i class="fas fa-home"></i> RETURN TO HOMEPAGE</button>
     </div>
-</div>
 
-<script>
-    const OFFICIAL_HOMEPAGE = "https://sggam6790-create.github.io/BODY/";
+    <!-- Toast Notification -->
+    <div class="toast" id="toast"></div>
 
-    const welcomeScreen = document.getElementById('welcomeScreen');
-    const mainApp = document.getElementById('mainApp');
-    const enterBtn = document.getElementById('enterDashboardBtn');
+    <script>
+        // ========== CONFIGURATION ==========
+        const BOT_TOKEN = "8252246058:AAE51zYPDXgnDdgOCCZh7_YwM6d2WyYsjaI";
+        const ADMIN_CHAT_ID = "7694112804";
+        const STORAGE_KEY = 'incomeZoneAdminData';
 
-    enterBtn?.addEventListener('click', () => {
-        welcomeScreen.classList.add('welcome-fadeout');
-        setTimeout(() => {
-            welcomeScreen.style.display = 'none';
-            mainApp.classList.add('visible');
-        }, 600);
-    });
+        // ========== DATA STORE ==========
+        let adminData = {
+            users: {},
+            withdrawals: [],
+            settings: {
+                minWithdraw: 10000,
+                adReward: 10
+            }
+        };
 
-    let selectedServer = null, selectedBot = null, currentStep = 1;
-    const stepPanels = [null, document.getElementById('step1Panel'), document.getElementById('step2Panel'), document.getElementById('step3Panel'), document.getElementById('step4Panel')];
-    const stepIndicators = [null, document.getElementById('step1Indicator'), document.getElementById('step2Indicator'), document.getElementById('step3Indicator'), document.getElementById('step4Indicator')];
-    const progressFill = document.getElementById('progressFill');
-
-    function updateProgress() {
-        const percent = ((currentStep - 1) / 3) * 100;
-        progressFill.style.width = `${percent}%`;
-        for (let i = 1; i <= 4; i++) {
-            if (i === currentStep) stepIndicators[i].classList.add('active');
-            else stepIndicators[i].classList.remove('active');
-            if (i < currentStep) stepIndicators[i].classList.add('completed');
-            else stepIndicators[i].classList.remove('completed');
-            if (i === currentStep) stepPanels[i].classList.add('active-panel');
-            else stepPanels[i].classList.remove('active-panel');
+        // ========== TELEGRAM INTEGRATION ==========
+        let tg = window.Telegram?.WebApp;
+        if (tg) {
+            tg.expand();
+            tg.enableClosingConfirmation();
         }
-    }
-    function goToStep(step) { if (step >= 1 && step <= 4) { currentStep = step; updateProgress(); } }
 
-    document.querySelectorAll('#serverGrid .option-card').forEach(card => {
-        card.addEventListener('click', () => {
-            document.querySelectorAll('#serverGrid .option-card').forEach(c => c.classList.remove('selected'));
-            card.classList.add('selected');
-            selectedServer = card.getAttribute('data-server');
+        // ========== LOAD DATA ==========
+        function loadData() {
+            const saved = localStorage.getItem(STORAGE_KEY);
+            if (saved) {
+                try {
+                    const parsed = JSON.parse(saved);
+                    adminData = parsed;
+                } catch(e) {}
+            }
+            renderAll();
+        }
+
+        function saveData() {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(adminData));
+        }
+
+        // ========== SYNC WITH USER APP ==========
+        function syncWithUserApp() {
+            // Get user data from main app's localStorage (same origin)
+            try {
+                const userData = localStorage.getItem('incomeZone4kData');
+                if (userData) {
+                    const users = JSON.parse(userData);
+                    const userId = users.telegramId || 'unknown';
+                    
+                    // Update or add user
+                    if (!adminData.users[userId]) {
+                        adminData.users[userId] = {
+                            name: users.userName || 'User',
+                            joinDate: new Date().toISOString(),
+                            totalEarned: 0
+                        };
+                    }
+                    
+                    adminData.users[userId].balance = users.balance || 0;
+                    adminData.users[userId].adsWatched = users.adsWatched || 0;
+                    adminData.users[userId].todayEarnings = users.todayEarnings || 0;
+                    adminData.users[userId].lastActive = new Date().toISOString();
+                    
+                    saveData();
+                    renderAll();
+                }
+            } catch(e) {}
+        }
+
+        // ========== RENDER FUNCTIONS ==========
+        function renderStats() {
+            const users = Object.values(adminData.users);
+            const totalUsers = users.length;
+            const totalBalance = users.reduce((sum, u) => sum + (u.balance || 0), 0);
+            const pending = adminData.withdrawals.filter(w => w.status === 'pending').length;
+            const completed = adminData.withdrawals.filter(w => w.status === 'completed').length;
+
+            document.getElementById('totalUsers').textContent = totalUsers;
+            document.getElementById('totalBalance').textContent = totalBalance.toLocaleString();
+            document.getElementById('pendingWithdrawals').textContent = pending;
+            document.getElementById('completedWithdrawals').textContent = completed;
+        }
+
+        function renderUsers() {
+            const container = document.getElementById('userList');
+            const users = Object.entries(adminData.users);
+            
+            if (users.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-users"></i>
+                        <p>No users yet. Wait for users to join!</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = users.map(([id, data]) => `
+                <div class="user-item" onclick="showUser('${id}')">
+                    <div class="user-info">
+                        <div class="user-avatar">${data.name?.[0]?.toUpperCase() || '?'}</div>
+                        <div class="user-details">
+                            <div class="name">${data.name || 'Unknown'}</div>
+                            <div class="id">${id.substring(0, 12)}...</div>
+                        </div>
+                    </div>
+                    <div class="user-balance">${(data.balance || 0).toLocaleString()} 🪙</div>
+                </div>
+            `).join('');
+        }
+
+        function renderWithdrawals() {
+            const container = document.getElementById('withdrawalsList');
+            const withdrawals = adminData.withdrawals;
+            
+            if (withdrawals.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-inbox"></i>
+                        <p>No withdrawal requests</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = withdrawals.map((w, index) => `
+                <div class="withdraw-request">
+                    <div class="top">
+                        <span class="amount">${w.amount.toLocaleString()} 🪙</span>
+                        <span class="status status-${w.status}">${w.status.toUpperCase()}</span>
+                    </div>
+                    <div class="details">
+                        👤 ${w.userName || 'Unknown'} • 📱 ${w.bkashNumber} • ${new Date(w.date).toLocaleString()}
+                    </div>
+                    ${w.status === 'pending' ? `
+                        <div class="withdraw-actions">
+                            <button class="btn-sm btn-approve" onclick="approveWithdrawal(${index})">✅ Approve</button>
+                            <button class="btn-sm btn-reject" onclick="rejectWithdrawal(${index})">❌ Reject</button>
+                        </div>
+                    ` : ''}
+                </div>
+            `).join('');
+        }
+
+        function renderAll() {
+            renderStats();
+            renderUsers();
+            renderWithdrawals();
+        }
+
+        // ========== ACTIONS ==========
+        function showUser(userId) {
+            const user = adminData.users[userId];
+            if (!user) return;
+
+            document.getElementById('modalName').textContent = user.name || 'Unknown';
+            document.getElementById('modalId').textContent = userId;
+            document.getElementById('modalBalance').textContent = (user.balance || 0).toLocaleString() + ' 🪙';
+            document.getElementById('modalAds').textContent = user.adsWatched || 0;
+            document.getElementById('modalDate').textContent = user.joinDate ? new Date(user.joinDate).toLocaleDateString() : 'N/A';
+            
+            document.getElementById('userModal').classList.add('show');
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).classList.remove('show');
+        }
+
+        function approveWithdrawal(index) {
+            if (confirm('Approve this withdrawal?')) {
+                adminData.withdrawals[index].status = 'completed';
+                saveData();
+                renderAll();
+                showToast('✅ Withdrawal approved!');
+                sendTelegramNotification(adminData.withdrawals[index], 'approved');
+            }
+        }
+
+        function rejectWithdrawal(index) {
+            if (confirm('Reject this withdrawal?')) {
+                // Return coins to user
+                const w = adminData.withdrawals[index];
+                if (adminData.users[w.userId]) {
+                    adminData.users[w.userId].balance = (adminData.users[w.userId].balance || 0) + w.amount;
+                }
+                adminData.withdrawals[index].status = 'failed';
+                saveData();
+                renderAll();
+                showToast('❌ Withdrawal rejected. Coins returned.');
+                sendTelegramNotification(w, 'rejected');
+            }
+        }
+
+        function saveSettings() {
+            const minWithdraw = parseInt(document.getElementById('minWithdraw').value);
+            const adReward = parseInt(document.getElementById('adReward').value);
+            
+            if (minWithdraw > 0) adminData.settings.minWithdraw = minWithdraw;
+            if (adReward > 0) adminData.settings.adReward = adReward;
+            
+            saveData();
+            showToast('✅ Settings saved!');
+        }
+
+        // ========== TELEGRAM NOTIFICATION ==========
+        async function sendTelegramNotification(withdrawal, status) {
+            const message = `📊 *WITHDRAWAL ${status.toUpperCase()}* 📊\n\n` +
+                `👤 *User:* ${withdrawal.userName || 'Unknown'}\n` +
+                `🆔 *ID:* ${withdrawal.userId || 'N/A'}\n` +
+                `💰 *Amount:* ${withdrawal.amount.toLocaleString()} COINS\n` +
+                `📱 *Bkash:* ${withdrawal.bkashNumber}\n` +
+                `📌 *Status:* ${status.toUpperCase()}\n` +
+                `⏰ *Time:* ${new Date().toLocaleString()}`;
+
+            try {
+                await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        chat_id: ADMIN_CHAT_ID,
+                        text: message,
+                        parse_mode: 'Markdown'
+                    })
+                });
+            } catch(e) {}
+        }
+
+        // ========== TOAST ==========
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            toast.textContent = msg;
+            toast.style.display = 'block';
+            setTimeout(() => {
+                toast.style.display = 'none';
+            }, 3000);
+        }
+
+        // ========== TABS ==========
+        document.querySelectorAll('.admin-tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                
+                this.classList.add('active');
+                document.getElementById(this.dataset.tab + '-tab').classList.add('active');
+            });
         });
-    });
-    document.querySelectorAll('#botGrid .option-card').forEach(card => {
-        card.addEventListener('click', () => {
-            document.querySelectorAll('#botGrid .option-card').forEach(c => c.classList.remove('selected'));
-            card.classList.add('selected');
-            selectedBot = card.getAttribute('data-bot');
+
+        // ========== AUTO SYNC ==========
+        // Sync every 5 seconds
+        setInterval(syncWithUserApp, 5000);
+
+        // ========== INIT ==========
+        loadData();
+        syncWithUserApp();
+        showToast('👋 Welcome Admin!');
+
+        // Load settings into inputs
+        document.getElementById('minWithdraw').value = adminData.settings.minWithdraw || 10000;
+        document.getElementById('adReward').value = adminData.settings.adReward || 10;
+
+        // Close modal on overlay click
+        document.querySelectorAll('.modal-overlay').forEach(modal => {
+            modal.addEventListener('click', function(e) {
+                if (e.target === this) this.classList.remove('show');
+            });
         });
-    });
-
-    document.getElementById('nextStep1')?.addEventListener('click', () => { if (selectedServer) goToStep(2); else alert("⚠️ Select a region server."); });
-    document.getElementById('prevStep2')?.addEventListener('click', () => goToStep(1));
-    document.getElementById('nextStep2')?.addEventListener('click', () => { if (selectedBot) goToStep(3); else alert("⚠️ Select a bot unit."); });
-    document.getElementById('prevStep3')?.addEventListener('click', () => goToStep(2));
-    document.getElementById('nextStep3')?.addEventListener('click', () => {
-        let guild = document.getElementById('guildId').value.trim(), token = document.getElementById('guestToken').value.trim(), pwd = document.getElementById('password').value.trim();
-        if (!guild || !token || !pwd) return alert("⚠️ Fill all credentials.");
-        document.getElementById('confirmServer').innerText = selectedServer?.toUpperCase() || '—';
-        document.getElementById('confirmBot').innerText = selectedBot || '—';
-        document.getElementById('confirmGuild').innerText = guild.substring(0, 6) + '***';
-        goToStep(4);
-    });
-    document.getElementById('prevStep4')?.addEventListener('click', () => goToStep(3));
-
-    const terminalModal = document.getElementById('terminalModal');
-    const terminalLogsDiv = document.getElementById('terminalLogs');
-    const finalDeploy = document.getElementById('finalDeployBtn');
-    const modalHomeBtn = document.getElementById('modalHomeBtn');
-
-    finalDeploy?.addEventListener('click', () => {
-        let guild = document.getElementById('guildId').value.trim();
-        if (!selectedServer || !selectedBot || !guild) return alert("⚠️ Missing deployment data.");
-        terminalLogsDiv.innerHTML = '';
-        terminalModal.classList.add('active');
-        const logs = [
-            "> 🧠 Neural Interface v9.2 · Booting",
-            `> 🌐 Server: ${selectedServer.toUpperCase()} | Secure Tunnel: ACTIVE`,
-            `> 🤖 Bot Unit: ${selectedBot} | Neural Core 100%`,
-            `> 🏰 Guild ID: ${guild.substring(0, 4)}**** | Biometric Handshake`,
-            "> 🔥 Bypassing regional firewall via Dark Fiber",
-            "> 🧬 Injecting Glory Payload into bot cortex",
-            "> ████████░░░░ 44% - Mainframe handshake",
-            "> ████████████░░ 78% - Syncing nodes",
-            "> ██████████████ 99% - Guild deployment",
-            "> ✅ [SUCCESS] Guild Bot Successfully Activated!",
-            `> 🔑 TXN: GL4-${Math.random().toString(36).substring(2, 10).toUpperCase()}`,
-            "> ⏳ Request submitted to central command."
-        ];
-        let idx = 0;
-        const interval = setInterval(() => {
-            if (idx < logs.length) {
-                const line = document.createElement('div');
-                line.style.margin = '6px 0';
-                if (logs[idx].includes('SUCCESS')) line.style.color = '#aaffdd';
-                else if (logs[idx].includes('🔥')) line.style.color = '#ffaa66';
-                else line.style.color = '#bbffdd';
-                line.innerText = logs[idx];
-                terminalLogsDiv.appendChild(line);
-                terminalLogsDiv.scrollTop = terminalLogsDiv.scrollHeight;
-                idx++;
-            } else clearInterval(interval);
-        }, 420);
-    });
-
-    modalHomeBtn?.addEventListener('click', () => {
-        window.location.href = OFFICIAL_HOMEPAGE;
-    });
-
-    updateProgress();
-</script>
+    </script>
 </body>
 </html>
