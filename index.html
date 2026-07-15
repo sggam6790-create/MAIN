@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>INCOME ZONE | ADMIN PANEL</title>
+    <title>INCOME ZONE | ADMIN PANEL v3.0</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
@@ -24,6 +24,9 @@
             --text-primary: #ffffff;
             --text-secondary: rgba(255,255,255,0.7);
             --gradient: linear-gradient(135deg, #FF006E, #FF9E00, #00F5D4, #00BBF9, #9B5DE5);
+            --danger: #FF006E;
+            --success: #00F5D4;
+            --warning: #FF9E00;
         }
 
         body {
@@ -120,6 +123,7 @@
             margin-bottom: 25px;
             overflow-x: auto;
             padding-bottom: 5px;
+            flex-wrap: wrap;
         }
 
         .admin-tab {
@@ -161,7 +165,7 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Table / User List */
+        /* User List */
         .user-list {
             background: var(--bg-card);
             backdrop-filter: blur(20px);
@@ -177,16 +181,32 @@
             align-items: center;
             padding: 15px 0;
             border-bottom: 1px solid rgba(255,255,255,0.05);
+            flex-wrap: wrap;
+            gap: 10px;
         }
 
         .user-item:last-child {
             border-bottom: none;
         }
 
+        .user-item.banned {
+            opacity: 0.5;
+            background: rgba(255,0,110,0.1);
+            border-radius: 15px;
+            padding: 15px;
+        }
+
+        .user-item.banned .user-name::after {
+            content: " 🚫 BANNED";
+            color: var(--danger);
+            font-size: 12px;
+        }
+
         .user-info {
             display: flex;
             align-items: center;
             gap: 15px;
+            flex: 1;
         }
 
         .user-avatar {
@@ -201,11 +221,11 @@
             font-size: 18px;
         }
 
-        .user-details .name {
+        .user-details .user-name {
             font-weight: 600;
         }
 
-        .user-details .id {
+        .user-details .user-id {
             font-size: 12px;
             color: var(--text-secondary);
         }
@@ -213,79 +233,52 @@
         .user-balance {
             font-weight: 700;
             color: var(--secondary);
+            min-width: 80px;
         }
 
-        /* Withdraw Requests */
-        .withdraw-request {
-            background: var(--bg-card);
-            backdrop-filter: blur(20px);
-            border: 1px solid var(--border-glass);
-            border-radius: 20px;
-            padding: 20px;
-            margin-bottom: 15px;
-            transition: all 0.3s ease;
-        }
-
-        .withdraw-request:hover {
-            border-color: var(--secondary);
-        }
-
-        .withdraw-request .top {
+        .user-actions {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 10px;
-        }
-
-        .withdraw-request .amount {
-            font-size: 24px;
-            font-weight: 800;
-            background: var(--gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .withdraw-request .status {
-            padding: 5px 15px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 600;
-        }
-
-        .status-pending {
-            background: rgba(255, 158, 0, 0.2);
-            color: #FF9E00;
-        }
-
-        .status-completed {
-            background: rgba(0, 245, 212, 0.2);
-            color: #00F5D4;
-        }
-
-        .status-failed {
-            background: rgba(255, 0, 110, 0.2);
-            color: #FF006E;
-        }
-
-        .withdraw-request .details {
-            color: var(--text-secondary);
-            font-size: 13px;
-        }
-
-        .withdraw-actions {
-            display: flex;
-            gap: 10px;
-            margin-top: 15px;
+            gap: 8px;
+            flex-wrap: wrap;
         }
 
         .btn-sm {
-            padding: 8px 20px;
+            padding: 6px 14px;
             border: none;
             border-radius: 20px;
             font-weight: 600;
-            font-size: 12px;
+            font-size: 11px;
             cursor: pointer;
             transition: all 0.3s ease;
+        }
+
+        .btn-sm:hover {
+            transform: scale(1.05);
+        }
+
+        .btn-edit {
+            background: linear-gradient(135deg, #00BBF9, #9B5DE5);
+            color: white;
+        }
+
+        .btn-ban {
+            background: linear-gradient(135deg, #FF006E, #FF9E00);
+            color: white;
+        }
+
+        .btn-unban {
+            background: linear-gradient(135deg, #00F5D4, #00BBF9);
+            color: #0a0a2a;
+        }
+
+        .btn-add {
+            background: linear-gradient(135deg, #00F5D4, #00BBF9);
+            color: #0a0a2a;
+        }
+
+        .btn-remove {
+            background: linear-gradient(135deg, #FF006E, #FF9E00);
+            color: white;
         }
 
         .btn-approve {
@@ -296,10 +289,6 @@
         .btn-reject {
             background: linear-gradient(135deg, #FF006E, #FF9E00);
             color: white;
-        }
-
-        .btn-sm:hover {
-            transform: scale(1.05);
         }
 
         /* Modal */
@@ -330,6 +319,8 @@
             width: 100%;
             border: 1px solid var(--border-glass);
             animation: modalIn 0.4s ease;
+            max-height: 90vh;
+            overflow-y: auto;
         }
 
         @keyframes modalIn {
@@ -338,7 +329,8 @@
         }
 
         .modal-content h2 {
-            margin-bottom: 15px;
+            margin-bottom: 20px;
+            font-size: 24px;
         }
 
         .modal-content .info-row {
@@ -348,19 +340,62 @@
             border-bottom: 1px solid rgba(255,255,255,0.05);
         }
 
-        .modal-close {
-            margin-top: 20px;
-            padding: 12px;
-            width: 100%;
-            border: none;
-            border-radius: 30px;
-            background: var(--gradient);
-            color: white;
-            font-weight: 700;
-            cursor: pointer;
+        .modal-content .info-row .label {
+            color: var(--text-secondary);
         }
 
-        /* Notification */
+        .modal-content .info-row .value {
+            font-weight: 600;
+        }
+
+        .modal-input-group {
+            margin: 15px 0;
+        }
+
+        .modal-input-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        .modal-input-group input {
+            width: 100%;
+            padding: 12px 20px;
+            background: rgba(255,255,255,0.06);
+            border: 1px solid var(--border-glass);
+            border-radius: 30px;
+            color: white;
+            font-size: 16px;
+            outline: none;
+            transition: all 0.3s;
+        }
+
+        .modal-input-group input:focus {
+            border-color: var(--secondary);
+            box-shadow: 0 0 20px rgba(0,245,212,0.2);
+        }
+
+        .modal-btn-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .modal-btn-group .btn-sm {
+            flex: 1;
+            padding: 12px;
+            font-size: 14px;
+            min-width: 100px;
+        }
+
+        .btn-close-modal {
+            background: rgba(255,255,255,0.1);
+            color: white;
+        }
+
+        /* Toast */
         .toast {
             position: fixed;
             bottom: 30px;
@@ -376,6 +411,20 @@
             z-index: 2000;
             display: none;
             animation: fadeIn 0.3s ease;
+            max-width: 90%;
+            text-align: center;
+        }
+
+        .toast.success {
+            border-color: var(--success);
+        }
+
+        .toast.error {
+            border-color: var(--danger);
+        }
+
+        .toast.warning {
+            border-color: var(--warning);
         }
 
         /* Empty State */
@@ -391,6 +440,89 @@
             opacity: 0.3;
         }
 
+        /* Search */
+        .search-box {
+            width: 100%;
+            padding: 12px 20px;
+            background: rgba(255,255,255,0.06);
+            border: 1px solid var(--border-glass);
+            border-radius: 30px;
+            color: white;
+            font-size: 14px;
+            outline: none;
+            margin-bottom: 15px;
+            transition: all 0.3s;
+        }
+
+        .search-box:focus {
+            border-color: var(--secondary);
+        }
+
+        .search-box::placeholder {
+            color: var(--text-secondary);
+        }
+
+        /* Status Badge */
+        .status-badge {
+            display: inline-block;
+            padding: 3px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .status-active {
+            background: rgba(0,245,212,0.2);
+            color: #00F5D4;
+        }
+
+        .status-banned {
+            background: rgba(255,0,110,0.2);
+            color: #FF006E;
+        }
+
+        .status-pending {
+            background: rgba(255,158,0,0.2);
+            color: #FF9E00;
+        }
+
+        .status-completed {
+            background: rgba(0,245,212,0.2);
+            color: #00F5D4;
+        }
+
+        .status-failed {
+            background: rgba(255,0,110,0.2);
+            color: #FF006E;
+        }
+
+        /* Action Log */
+        .action-log {
+            background: rgba(255,255,255,0.03);
+            border-radius: 15px;
+            padding: 15px;
+            margin-top: 10px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .log-item {
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        .log-item .time {
+            color: var(--text-secondary);
+            font-size: 11px;
+        }
+
+        .log-item .action {
+            color: var(--secondary);
+            font-weight: 600;
+        }
+
         /* Responsive */
         @media (max-width: 600px) {
             .stats-grid {
@@ -401,17 +533,20 @@
             }
             .user-item {
                 flex-direction: column;
-                align-items: flex-start;
-                gap: 10px;
+                align-items: stretch;
             }
-            .withdraw-request .top {
+            .user-actions {
+                justify-content: flex-start;
+            }
+            .admin-tabs {
+                flex-wrap: nowrap;
+                overflow-x: auto;
+            }
+            .modal-btn-group {
                 flex-direction: column;
-                align-items: flex-start;
-                gap: 10px;
             }
         }
 
-        /* Scrollbar */
         ::-webkit-scrollbar {
             width: 4px;
         }
@@ -429,7 +564,7 @@
     <!-- Header -->
     <div class="admin-header">
         <h1>👑 INCOME ZONE</h1>
-        <p>Admin Control Panel • v2.0</p>
+        <p>Admin Control Panel v3.0 • Full Control</p>
         <span class="admin-badge">🔒 SECURE ADMIN</span>
     </div>
 
@@ -446,14 +581,14 @@
             <div class="label">Total Coins</div>
         </div>
         <div class="stat-card">
+            <div class="icon">🚫</div>
+            <div class="number" id="bannedUsers">0</div>
+            <div class="label">Banned Users</div>
+        </div>
+        <div class="stat-card">
             <div class="icon">📤</div>
             <div class="number" id="pendingWithdrawals">0</div>
             <div class="label">Pending Withdrawals</div>
-        </div>
-        <div class="stat-card">
-            <div class="icon">✅</div>
-            <div class="number" id="completedWithdrawals">0</div>
-            <div class="label">Completed</div>
         </div>
     </div>
 
@@ -461,25 +596,45 @@
     <div class="admin-tabs">
         <div class="admin-tab active" data-tab="users">👥 Users</div>
         <div class="admin-tab" data-tab="withdrawals">💸 Withdrawals</div>
+        <div class="admin-tab" data-tab="logs">📋 Action Logs</div>
         <div class="admin-tab" data-tab="settings">⚙️ Settings</div>
     </div>
 
     <!-- Users Tab -->
     <div class="tab-content active" id="users-tab">
-        <div class="user-list" id="userList">
-            <div class="empty-state">
-                <i class="fas fa-users"></i>
-                <p>Loading users...</p>
+        <div class="user-list">
+            <input type="text" class="search-box" id="searchUser" placeholder="🔍 Search user by name or ID...">
+            <div id="userList">
+                <div class="empty-state">
+                    <i class="fas fa-users"></i>
+                    <p>Loading users...</p>
+                </div>
             </div>
         </div>
     </div>
 
     <!-- Withdrawals Tab -->
     <div class="tab-content" id="withdrawals-tab">
-        <div id="withdrawalsList">
-            <div class="empty-state">
-                <i class="fas fa-inbox"></i>
-                <p>No withdrawal requests</p>
+        <div class="user-list">
+            <h3 style="margin-bottom: 15px;">💸 Withdrawal Requests</h3>
+            <div id="withdrawalsList">
+                <div class="empty-state">
+                    <i class="fas fa-inbox"></i>
+                    <p>No withdrawal requests</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Logs Tab -->
+    <div class="tab-content" id="logs-tab">
+        <div class="user-list">
+            <h3 style="margin-bottom: 15px;">📋 Admin Action Logs</h3>
+            <div class="action-log" id="actionLogs">
+                <div class="empty-state">
+                    <i class="fas fa-clock"></i>
+                    <p>No actions logged yet</p>
+                </div>
             </div>
         </div>
     </div>
@@ -513,18 +668,34 @@
         </div>
     </div>
 
-    <!-- User Detail Modal -->
-    <div class="modal-overlay" id="userModal">
+    <!-- User Action Modal -->
+    <div class="modal-overlay" id="userActionModal">
         <div class="modal-content">
-            <h2>👤 User Details</h2>
-            <div id="userDetailContent">
-                <div class="info-row"><span>Name</span><span id="modalName">-</span></div>
-                <div class="info-row"><span>User ID</span><span id="modalId">-</span></div>
-                <div class="info-row"><span>Balance</span><span id="modalBalance">-</span></div>
-                <div class="info-row"><span>Ads Watched</span><span id="modalAds">-</span></div>
-                <div class="info-row"><span>Join Date</span><span id="modalDate">-</span></div>
+            <h2 id="modalTitle">👤 User Actions</h2>
+            <div id="modalContent">
+                <div class="info-row"><span class="label">Name</span><span class="value" id="modalName">-</span></div>
+                <div class="info-row"><span class="label">User ID</span><span class="value" id="modalId">-</span></div>
+                <div class="info-row"><span class="label">Balance</span><span class="value" id="modalBalance">-</span></div>
+                <div class="info-row"><span class="label">Ads Watched</span><span class="value" id="modalAds">-</span></div>
+                <div class="info-row"><span class="label">Status</span><span class="value" id="modalStatus">-</span></div>
+
+                <div class="modal-input-group">
+                    <label>Add Coins</label>
+                    <input type="number" id="addCoinsInput" placeholder="Enter amount to add...">
+                    <button class="btn-sm btn-add" onclick="addBalance()" style="margin-top: 10px; width: 100%; padding: 10px;">➕ Add Coins</button>
+                </div>
+
+                <div class="modal-input-group">
+                    <label>Remove Coins</label>
+                    <input type="number" id="removeCoinsInput" placeholder="Enter amount to remove...">
+                    <button class="btn-sm btn-remove" onclick="removeBalance()" style="margin-top: 10px; width: 100%; padding: 10px;">➖ Remove Coins</button>
+                </div>
+
+                <div class="modal-btn-group">
+                    <button class="btn-sm btn-ban" id="banBtn" onclick="toggleBan()">🚫 Ban User</button>
+                    <button class="btn-sm btn-close-modal" onclick="closeModal('userActionModal')">❌ Close</button>
+                </div>
             </div>
-            <button class="modal-close" onclick="closeModal('userModal')">Close</button>
         </div>
     </div>
 
@@ -541,11 +712,14 @@
         let adminData = {
             users: {},
             withdrawals: [],
+            logs: [],
             settings: {
                 minWithdraw: 10000,
                 adReward: 10
             }
         };
+
+        let currentUserId = null;
 
         // ========== TELEGRAM INTEGRATION ==========
         let tg = window.Telegram?.WebApp;
@@ -570,22 +744,36 @@
             localStorage.setItem(STORAGE_KEY, JSON.stringify(adminData));
         }
 
+        // ========== LOG ACTION ==========
+        function logAction(action, userId, details) {
+            adminData.logs.unshift({
+                action: action,
+                userId: userId,
+                details: details,
+                time: new Date().toISOString()
+            });
+            if (adminData.logs.length > 100) adminData.logs.pop();
+            saveData();
+            renderLogs();
+        }
+
         // ========== SYNC WITH USER APP ==========
         function syncWithUserApp() {
-            // Get user data from main app's localStorage (same origin)
             try {
+                // ইউজার অ্যাপ থেকে ডেটা নেওয়া
                 const userData = localStorage.getItem('incomeZone4kData');
                 if (userData) {
                     const users = JSON.parse(userData);
                     const userId = users.telegramId || 'unknown';
                     
-                    // Update or add user
                     if (!adminData.users[userId]) {
                         adminData.users[userId] = {
                             name: users.userName || 'User',
                             joinDate: new Date().toISOString(),
-                            totalEarned: 0
+                            totalEarned: 0,
+                            banned: false
                         };
+                        logAction('user_joined', userId, `${users.userName} joined the platform`);
                     }
                     
                     adminData.users[userId].balance = users.balance || 0;
@@ -604,39 +792,51 @@
             const users = Object.values(adminData.users);
             const totalUsers = users.length;
             const totalBalance = users.reduce((sum, u) => sum + (u.balance || 0), 0);
+            const banned = users.filter(u => u.banned).length;
             const pending = adminData.withdrawals.filter(w => w.status === 'pending').length;
-            const completed = adminData.withdrawals.filter(w => w.status === 'completed').length;
 
             document.getElementById('totalUsers').textContent = totalUsers;
             document.getElementById('totalBalance').textContent = totalBalance.toLocaleString();
+            document.getElementById('bannedUsers').textContent = banned;
             document.getElementById('pendingWithdrawals').textContent = pending;
-            document.getElementById('completedWithdrawals').textContent = completed;
         }
 
         function renderUsers() {
             const container = document.getElementById('userList');
-            const users = Object.entries(adminData.users);
+            const searchTerm = document.getElementById('searchUser')?.value?.toLowerCase() || '';
+            
+            let users = Object.entries(adminData.users);
+            
+            if (searchTerm) {
+                users = users.filter(([id, data]) => 
+                    data.name?.toLowerCase().includes(searchTerm) || 
+                    id.toLowerCase().includes(searchTerm)
+                );
+            }
             
             if (users.length === 0) {
                 container.innerHTML = `
                     <div class="empty-state">
                         <i class="fas fa-users"></i>
-                        <p>No users yet. Wait for users to join!</p>
+                        <p>${searchTerm ? 'No users found matching "' + searchTerm + '"' : 'No users yet. Wait for users to join!'}</p>
                     </div>
                 `;
                 return;
             }
 
             container.innerHTML = users.map(([id, data]) => `
-                <div class="user-item" onclick="showUser('${id}')">
+                <div class="user-item ${data.banned ? 'banned' : ''}">
                     <div class="user-info">
                         <div class="user-avatar">${data.name?.[0]?.toUpperCase() || '?'}</div>
                         <div class="user-details">
-                            <div class="name">${data.name || 'Unknown'}</div>
-                            <div class="id">${id.substring(0, 12)}...</div>
+                            <div class="user-name">${data.name || 'Unknown'} <span class="status-badge ${data.banned ? 'status-banned' : 'status-active'}">${data.banned ? '🚫 BANNED' : '✅ ACTIVE'}</span></div>
+                            <div class="user-id">ID: ${id.substring(0, 12)}...</div>
                         </div>
                     </div>
                     <div class="user-balance">${(data.balance || 0).toLocaleString()} 🪙</div>
+                    <div class="user-actions">
+                        <button class="btn-sm btn-edit" onclick="openUserActions('${id}')">⚡ Manage</button>
+                    </div>
                 </div>
             `).join('');
         }
@@ -656,20 +856,46 @@
             }
 
             container.innerHTML = withdrawals.map((w, index) => `
-                <div class="withdraw-request">
-                    <div class="top">
-                        <span class="amount">${w.amount.toLocaleString()} 🪙</span>
-                        <span class="status status-${w.status}">${w.status.toUpperCase()}</span>
+                <div class="user-item">
+                    <div class="user-info">
+                        <div class="user-avatar">${w.userName?.[0]?.toUpperCase() || '?'}</div>
+                        <div class="user-details">
+                            <div class="user-name">${w.userName || 'Unknown'}</div>
+                            <div class="user-id">📱 ${w.bkashNumber} • ${new Date(w.date).toLocaleString()}</div>
+                        </div>
                     </div>
-                    <div class="details">
-                        👤 ${w.userName || 'Unknown'} • 📱 ${w.bkashNumber} • ${new Date(w.date).toLocaleString()}
-                    </div>
-                    ${w.status === 'pending' ? `
-                        <div class="withdraw-actions">
+                    <div class="user-balance">${w.amount.toLocaleString()} 🪙</div>
+                    <div class="user-actions">
+                        <span class="status-badge status-${w.status}">${w.status.toUpperCase()}</span>
+                        ${w.status === 'pending' ? `
                             <button class="btn-sm btn-approve" onclick="approveWithdrawal(${index})">✅ Approve</button>
                             <button class="btn-sm btn-reject" onclick="rejectWithdrawal(${index})">❌ Reject</button>
-                        </div>
-                    ` : ''}
+                        ` : ''}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderLogs() {
+            const container = document.getElementById('actionLogs');
+            const logs = adminData.logs;
+            
+            if (logs.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-clock"></i>
+                        <p>No actions logged yet</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = logs.map(log => `
+                <div class="log-item">
+                    <span class="time">${new Date(log.time).toLocaleString()}</span>
+                    <span class="action">${log.action}</span>
+                    ${log.details ? `— ${log.details}` : ''}
+                    ${log.userId ? `<span style="font-size:11px;color:var(--text-secondary);">(${log.userId.substring(0, 10)})</span>` : ''}
                 </div>
             `).join('');
         }
@@ -678,51 +904,118 @@
             renderStats();
             renderUsers();
             renderWithdrawals();
+            renderLogs();
         }
 
-        // ========== ACTIONS ==========
-        function showUser(userId) {
+        // ========== USER ACTIONS ==========
+        function openUserActions(userId) {
+            currentUserId = userId;
             const user = adminData.users[userId];
             if (!user) return;
 
+            document.getElementById('modalTitle').textContent = `👤 ${user.name || 'User'}`;
             document.getElementById('modalName').textContent = user.name || 'Unknown';
             document.getElementById('modalId').textContent = userId;
             document.getElementById('modalBalance').textContent = (user.balance || 0).toLocaleString() + ' 🪙';
             document.getElementById('modalAds').textContent = user.adsWatched || 0;
-            document.getElementById('modalDate').textContent = user.joinDate ? new Date(user.joinDate).toLocaleDateString() : 'N/A';
+            document.getElementById('modalStatus').innerHTML = user.banned ? '🚫 BANNED' : '✅ ACTIVE';
             
-            document.getElementById('userModal').classList.add('show');
+            document.getElementById('banBtn').textContent = user.banned ? '✅ Unban User' : '🚫 Ban User';
+            document.getElementById('banBtn').className = user.banned ? 'btn-sm btn-unban' : 'btn-sm btn-ban';
+            
+            document.getElementById('addCoinsInput').value = '';
+            document.getElementById('removeCoinsInput').value = '';
+            
+            document.getElementById('userActionModal').classList.add('show');
         }
 
-        function closeModal(id) {
-            document.getElementById(id).classList.remove('show');
-        }
-
-        function approveWithdrawal(index) {
-            if (confirm('Approve this withdrawal?')) {
-                adminData.withdrawals[index].status = 'completed';
-                saveData();
-                renderAll();
-                showToast('✅ Withdrawal approved!');
-                sendTelegramNotification(adminData.withdrawals[index], 'approved');
+        function addBalance() {
+            const input = document.getElementById('addCoinsInput');
+            const amount = parseInt(input.value);
+            if (!amount || amount <= 0) {
+                showToast('Please enter a valid amount', 'error');
+                return;
             }
+            
+            const user = adminData.users[currentUserId];
+            if (!user) return;
+            
+            user.balance = (user.balance || 0) + amount;
+            saveData();
+            renderAll();
+            logAction('balance_added', currentUserId, `Added ${amount} coins`);
+            showToast(`✅ Added ${amount} coins to ${user.name}`, 'success');
+            input.value = '';
+            openUserActions(currentUserId);
+        }
+
+        function removeBalance() {
+            const input = document.getElementById('removeCoinsInput');
+            const amount = parseInt(input.value);
+            if (!amount || amount <= 0) {
+                showToast('Please enter a valid amount', 'error');
+                return;
+            }
+            
+            const user = adminData.users[currentUserId];
+            if (!user) return;
+            
+            if ((user.balance || 0) < amount) {
+                showToast('❌ Insufficient balance', 'error');
+                return;
+            }
+            
+            user.balance = (user.balance || 0) - amount;
+            saveData();
+            renderAll();
+            logAction('balance_removed', currentUserId, `Removed ${amount} coins`);
+            showToast(`✅ Removed ${amount} coins from ${user.name}`, 'warning');
+            input.value = '';
+            openUserActions(currentUserId);
+        }
+
+        function toggleBan() {
+            const user = adminData.users[currentUserId];
+            if (!user) return;
+            
+            user.banned = !user.banned;
+            saveData();
+            renderAll();
+            logAction(user.banned ? 'user_banned' : 'user_unbanned', currentUserId, `${user.name} ${user.banned ? 'banned' : 'unbanned'}`);
+            showToast(`${user.banned ? '🚫 Banned' : '✅ Unbanned'} ${user.name}`, user.banned ? 'error' : 'success');
+            openUserActions(currentUserId);
+        }
+
+        // ========== WITHDRAWAL ACTIONS ==========
+        function approveWithdrawal(index) {
+            if (!confirm('Approve this withdrawal?')) return;
+            
+            const w = adminData.withdrawals[index];
+            w.status = 'completed';
+            saveData();
+            renderAll();
+            logAction('withdrawal_approved', w.userId, `Approved ${w.amount} coins for ${w.userName}`);
+            showToast('✅ Withdrawal approved!', 'success');
+            sendTelegramNotification(w, 'approved');
         }
 
         function rejectWithdrawal(index) {
-            if (confirm('Reject this withdrawal?')) {
-                // Return coins to user
-                const w = adminData.withdrawals[index];
-                if (adminData.users[w.userId]) {
-                    adminData.users[w.userId].balance = (adminData.users[w.userId].balance || 0) + w.amount;
-                }
-                adminData.withdrawals[index].status = 'failed';
-                saveData();
-                renderAll();
-                showToast('❌ Withdrawal rejected. Coins returned.');
-                sendTelegramNotification(w, 'rejected');
+            if (!confirm('Reject this withdrawal?')) return;
+            
+            const w = adminData.withdrawals[index];
+            // Return coins to user
+            if (adminData.users[w.userId]) {
+                adminData.users[w.userId].balance = (adminData.users[w.userId].balance || 0) + w.amount;
             }
+            w.status = 'failed';
+            saveData();
+            renderAll();
+            logAction('withdrawal_rejected', w.userId, `Rejected ${w.amount} coins for ${w.userName}`);
+            showToast('❌ Withdrawal rejected. Coins returned.', 'error');
+            sendTelegramNotification(w, 'rejected');
         }
 
+        // ========== SETTINGS ==========
         function saveSettings() {
             const minWithdraw = parseInt(document.getElementById('minWithdraw').value);
             const adReward = parseInt(document.getElementById('adReward').value);
@@ -731,7 +1024,8 @@
             if (adReward > 0) adminData.settings.adReward = adReward;
             
             saveData();
-            showToast('✅ Settings saved!');
+            logAction('settings_updated', 'admin', 'Updated admin settings');
+            showToast('✅ Settings saved!', 'success');
         }
 
         // ========== TELEGRAM NOTIFICATION ==========
@@ -758,13 +1052,19 @@
         }
 
         // ========== TOAST ==========
-        function showToast(msg) {
+        function showToast(msg, type = 'success') {
             const toast = document.getElementById('toast');
             toast.textContent = msg;
+            toast.className = `toast ${type}`;
             toast.style.display = 'block';
             setTimeout(() => {
                 toast.style.display = 'none';
             }, 3000);
+        }
+
+        // ========== MODAL ==========
+        function closeModal(id) {
+            document.getElementById(id).classList.remove('show');
         }
 
         // ========== TABS ==========
@@ -778,16 +1078,18 @@
             });
         });
 
+        // ========== SEARCH ==========
+        document.getElementById('searchUser')?.addEventListener('input', renderUsers);
+
         // ========== AUTO SYNC ==========
-        // Sync every 5 seconds
-        setInterval(syncWithUserApp, 5000);
+        setInterval(syncWithUserApp, 3000);
 
         // ========== INIT ==========
         loadData();
         syncWithUserApp();
-        showToast('👋 Welcome Admin!');
+        showToast('👋 Welcome Admin! Full control panel ready');
 
-        // Load settings into inputs
+        // Load settings
         document.getElementById('minWithdraw').value = adminData.settings.minWithdraw || 10000;
         document.getElementById('adReward').value = adminData.settings.adReward || 10;
 
@@ -797,6 +1099,10 @@
                 if (e.target === this) this.classList.remove('show');
             });
         });
+
+        console.log('✅ Admin Panel Loaded');
+        console.log('📊 Total Users:', Object.keys(adminData.users).length);
+        console.log('📤 Pending Withdrawals:', adminData.withdrawals.filter(w => w.status === 'pending').length);
     </script>
 </body>
 </html>
