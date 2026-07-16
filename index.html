@@ -3,12 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>INCOME ZONE | ADMIN PANEL v5.0</title>
+    <title>INCOME ZONE | ADMIN PANEL v6.0</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     
     <style>
+        /* ========== সমস্ত CSS আগের মতোই থাকবে ========== */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         :root {
             --primary: #FF006E;
@@ -103,6 +104,7 @@
         .log-item .time { color: var(--text-secondary); font-size: 11px; }
         .log-item .action { color: var(--secondary); font-weight: 600; }
         .withdraw-count { background: var(--danger); color: white; border-radius: 50%; padding: 2px 8px; font-size: 11px; margin-left: 5px; }
+        .sync-status { font-size: 12px; color: var(--text-secondary); margin-top: 10px; padding: 8px 15px; background: rgba(255,255,255,0.05); border-radius: 20px; display: inline-block; }
         @media (max-width: 600px) { .stats-grid { grid-template-columns: 1fr 1fr; } .admin-header h1 { font-size: 24px; } .user-item { flex-direction: column; align-items: stretch; } .user-actions { justify-content: flex-start; } .admin-tabs { flex-wrap: nowrap; overflow-x: auto; } .modal-btn-group { flex-direction: column; } .withdraw-sub-tabs { flex-wrap: nowrap; overflow-x: auto; } }
         ::-webkit-scrollbar { width: 4px; } ::-webkit-scrollbar-track { background: rgba(255,255,255,0.05); } ::-webkit-scrollbar-thumb { background: var(--gradient); border-radius: 10px; }
     </style>
@@ -111,8 +113,9 @@
 
     <div class="admin-header">
         <h1>👑 INCOME ZONE</h1>
-        <p>Admin Control Panel v5.0 • Real-Time User Sync</p>
+        <p>Admin Control Panel v6.0 • Telegram Bot Sync</p>
         <span class="admin-badge">🔒 SECURE ADMIN</span>
+        <div class="sync-status" id="syncStatus">🔄 Syncing...</div>
     </div>
 
     <div class="stats-grid" id="statsGrid">
@@ -191,7 +194,7 @@
                 </div>
                 <button onclick="saveSettings()" style="width:100%;padding:15px;border:none;border-radius:30px;background:var(--gradient);color:white;font-weight:700;font-size:16px;cursor:pointer;">💾 Save Settings</button>
                 <div style="margin-top:20px;padding:15px;background:rgba(255,0,110,0.1);border-radius:20px;border-left:4px solid #FF006E;">
-                    <p style="font-size:13px;color:var(--text-secondary);"><strong>⚠️ Note:</strong> All data is stored locally. For production, use a backend server.</p>
+                    <p style="font-size:13px;color:var(--text-secondary);"><strong>⚠️ Note:</strong> Data is synced via Telegram Bot. Make sure your bot is active.</p>
                 </div>
             </div>
         </div>
@@ -233,7 +236,6 @@
         const BOT_TOKEN = "8252246058:AAE51zYPDXgnDdgOCCZh7_YwM6d2WyYsjaI";
         const ADMIN_CHAT_ID = "7694112804";
         const STORAGE_KEY = 'incomeZoneAdminData';
-        const USER_STORAGE_KEY_PREFIX = 'incomeZone4kData_';
 
         let adminData = { users: {}, withdrawals: [], logs: [], settings: { minWithdraw: 10000, adReward: 10 } };
         let currentUserId = null;
@@ -269,84 +271,93 @@
         }
 
         // ==========================================
-        // SYNC USER DATA - সম্পূর্ণ ফিক্সড
+        // TELEGRAM BOT থেকে ইউজার ডেটা পড়ুন
         // ==========================================
-        function syncUserData() {
-            console.log('🔄 Syncing user data...');
-            
+        let lastUpdateId = 0;
+
+        async function fetchUsersFromBot() {
             try {
-                // ১. অ্যাডমিন ডেটা রিলোড করুন
-                const saved = localStorage.getItem(STORAGE_KEY);
-                if (saved) {
-                    try { 
-                        adminData = JSON.parse(saved); 
-                        console.log('✅ Admin data loaded:', Object.keys(adminData.users).length, 'users');
-                    } catch (e) {
-                        console.error('❌ Error parsing admin data:', e);
-                    }
+                document.getElementById('syncStatus').textContent = '🔄 Syncing...';
+                document.getElementById('syncStatus').style.color = 'var(--text-secondary)';
+
+                // বট থেকে মেসেজ ইতিহাস পড়ুন
+                const url = `https://api.telegram.org/bot${BOT_TOKEN}/getUpdates?limit=100`;
+                if (lastUpdateId > 0) {
+                    url += `&offset=${lastUpdateId + 1}`;
                 }
-
-                // ২. সব ইউজার কী খুঁজুন
-                const allKeys = Object.keys(localStorage);
-                const userKeys = allKeys.filter(key => key.startsWith(USER_STORAGE_KEY_PREFIX));
-                console.log('📁 Found user keys:', userKeys.length);
-
-                if (userKeys.length === 0) {
-                    console.log('📭 No user data found');
-                    renderAll();
+                
+                const response = await fetch(url);
+                const data = await response.json();
+                
+                if (!data.ok) {
+                    console.error('❌ Bot API error:', data);
+                    document.getElementById('syncStatus').textContent = '⚠️ Sync Error';
+                    document.getElementById('syncStatus').style.color = '#FF006E';
                     return;
                 }
 
-                let updated = false;
+                if (data.result.length === 0) {
+                    document.getElementById('syncStatus').textContent = '✅ No new data';
+                    document.getElementById('syncStatus').style.color = '#00F5D4';
+                    return;
+                }
 
-                userKeys.forEach(key => {
-                    try {
-                        const userDataRaw = localStorage.getItem(key);
-                        if (!userDataRaw) return;
+                // সর্বশেষ updateId সংরক্ষণ করুন
+                if (data.result.length > 0) {
+                    lastUpdateId = data.result[data.result.length - 1].update_id;
+                }
 
-                        const userData = JSON.parse(userDataRaw);
-                        const userId = userData.telegramId || key.replace(USER_STORAGE_KEY_PREFIX, '');
+                const users = {};
+                const processedIds = new Set();
 
-                        console.log('👤 Found user:', userId, userData.userName);
+                data.result.forEach(update => {
+                    if (update.message && update.message.text) {
+                        const text = update.message.text;
+                        
+                        // ইউজার ডেটা এক্সট্র্যাক্ট করুন
+                        if (text.includes('📊 *USER DATA UPDATE*')) {
+                            const nameMatch = text.match(/👤 \*Name:\* (.+)/);
+                            const idMatch = text.match(/🆔 \*ID:\* (.+)/);
+                            const balanceMatch = text.match(/💰 \*Balance:\* (.+)/);
+                            const adsMatch = text.match(/👁️ \*Ads Watched:\* (.+)/);
+                            const earningsMatch = text.match(/📈 \*Today\'s Earnings:\* (.+)/);
 
-                        // ইউজার তৈরি বা আপডেট
-                        if (!adminData.users[userId]) {
-                            adminData.users[userId] = {
-                                name: userData.userName || 'User',
-                                joinDate: new Date().toISOString(),
-                                balance: userData.balance || 0,
-                                adsWatched: userData.adsWatched || 0,
-                                todayEarnings: userData.todayEarnings || 0,
-                                banned: false,
-                                totalEarned: 0
-                            };
-                            addLog('user_joined', userId, `${userData.userName || 'User'} joined`);
-                            updated = true;
-                        } else {
-                            // আপডেট
-                            adminData.users[userId].name = userData.userName || adminData.users[userId].name;
-                            adminData.users[userId].balance = userData.balance || 0;
-                            adminData.users[userId].adsWatched = userData.adsWatched || 0;
-                            adminData.users[userId].todayEarnings = userData.todayEarnings || 0;
-                            adminData.users[userId].lastActive = new Date().toISOString();
-                            updated = true;
+                            if (idMatch) {
+                                const userId = idMatch[1].trim();
+                                if (!processedIds.has(userId)) {
+                                    processedIds.add(userId);
+                                    users[userId] = {
+                                        name: nameMatch ? nameMatch[1].trim() : 'Unknown',
+                                        balance: balanceMatch ? parseInt(balanceMatch[1].trim()) : 0,
+                                        adsWatched: adsMatch ? parseInt(adsMatch[1].trim()) : 0,
+                                        todayEarnings: earningsMatch ? parseInt(earningsMatch[1].trim()) : 0,
+                                        banned: false,
+                                        lastActive: new Date().toISOString()
+                                    };
+                                }
+                            }
                         }
-
-                    } catch (e) {
-                        console.error('❌ Error syncing user from key:', key, e);
                     }
                 });
 
-                if (updated) {
+                // অ্যাডমিন ডেটা আপডেট করুন
+                if (Object.keys(users).length > 0) {
+                    Object.keys(users).forEach(key => {
+                        adminData.users[key] = users[key];
+                    });
                     saveData();
                     renderAll();
-                    console.log('✅ Users synced, total:', Object.keys(adminData.users).length);
+                    console.log('✅ Users fetched from bot:', Object.keys(users).length);
+                    document.getElementById('syncStatus').textContent = `✅ ${Object.keys(users).length} users synced`;
+                    document.getElementById('syncStatus').style.color = '#00F5D4';
                 } else {
-                    renderAll();
+                    document.getElementById('syncStatus').textContent = '✅ No new users';
+                    document.getElementById('syncStatus').style.color = '#00F5D4';
                 }
             } catch (e) {
-                console.error('❌ Error syncing user data:', e);
-                renderAll();
+                console.error('❌ Error fetching from bot:', e);
+                document.getElementById('syncStatus').textContent = '⚠️ Connection Error';
+                document.getElementById('syncStatus').style.color = '#FF006E';
             }
         }
 
@@ -384,7 +395,7 @@
                 container.innerHTML = `
                     <div class="empty-state">
                         <i class="fas fa-users"></i>
-                        <p>${searchTerm ? 'No users found matching "' + searchTerm + '"' : 'No users yet'}</p>
+                        <p>${searchTerm ? 'No users found matching "' + searchTerm + '"' : 'No users yet. Ask users to open the app!'}</p>
                     </div>
                 `;
                 return;
@@ -517,17 +528,6 @@
             if (!user) { showToast('User not found', 'error'); return; }
 
             user.balance = (user.balance || 0) + amount;
-
-            const userStorageKey = USER_STORAGE_KEY_PREFIX + currentUserId;
-            try {
-                const userDataRaw = localStorage.getItem(userStorageKey);
-                if (userDataRaw) {
-                    const userData = JSON.parse(userDataRaw);
-                    userData.balance = (userData.balance || 0) + amount;
-                    localStorage.setItem(userStorageKey, JSON.stringify(userData));
-                }
-            } catch (e) {}
-
             saveData();
             addLog('balance_added', currentUserId, `Added ${amount} coins to ${user.name}`);
             renderAll();
@@ -549,17 +549,6 @@
             }
 
             user.balance = (user.balance || 0) - amount;
-
-            const userStorageKey = USER_STORAGE_KEY_PREFIX + currentUserId;
-            try {
-                const userDataRaw = localStorage.getItem(userStorageKey);
-                if (userDataRaw) {
-                    const userData = JSON.parse(userDataRaw);
-                    userData.balance = (userData.balance || 0) - amount;
-                    localStorage.setItem(userStorageKey, JSON.stringify(userData));
-                }
-            } catch (e) {}
-
             saveData();
             addLog('balance_removed', currentUserId, `Removed ${amount} coins from ${user.name}`);
             renderAll();
@@ -602,16 +591,6 @@
             if (adminData.users[w.userId]) {
                 adminData.users[w.userId].balance = (adminData.users[w.userId].balance || 0) + w.amount;
             }
-
-            const userStorageKey = USER_STORAGE_KEY_PREFIX + w.userId;
-            try {
-                const userDataRaw = localStorage.getItem(userStorageKey);
-                if (userDataRaw) {
-                    const userData = JSON.parse(userDataRaw);
-                    userData.balance = (userData.balance || 0) + w.amount;
-                    localStorage.setItem(userStorageKey, JSON.stringify(userData));
-                }
-            } catch (e) {}
 
             w.status = 'failed';
             saveData();
@@ -683,23 +662,25 @@
         });
 
         // ==========================================
-        // AUTO SYNC - প্রতি ৩ সেকেন্ড
+        // AUTO SYNC - প্রতি ১০ সেকেন্ড
         // ==========================================
-        setInterval(syncUserData, 3000);
+        setInterval(fetchUsersFromBot, 10000);
 
         // ==========================================
         // INITIALIZE
         // ==========================================
         loadData();
-        syncUserData();
-        showToast('👋 Welcome Admin! Panel v5.0');
+        
+        // প্রথমবার বট থেকে ডেটা নিন
+        setTimeout(fetchUsersFromBot, 1000);
+        
+        showToast('👋 Welcome Admin! Panel v6.0 - Bot Sync');
 
         document.getElementById('minWithdraw').value = adminData.settings.minWithdraw || 10000;
         document.getElementById('adReward').value = adminData.settings.adReward || 10;
 
-        console.log('✅ Admin Panel v5.0 Loaded (FINAL VERSION)');
+        console.log('✅ Admin Panel v6.0 Loaded');
         console.log('📊 Total Users:', Object.keys(adminData.users).length);
-        console.log('📤 Pending:', adminData.withdrawals.filter(w => w.status === 'pending').length);
     </script>
 </body>
 </html>
