@@ -3,14 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>INCOME ZONE | ADMIN PANEL v6.0</title>
+    <title>INCOME ZONE | ADMIN PANEL</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     
     <style>
-        /* ========== সমস্ত CSS আগের মতোই থাকবে ========== */
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
         :root {
             --primary: #FF006E;
             --secondary: #00F5D4;
@@ -24,89 +27,510 @@
             --success: #00F5D4;
             --warning: #FF9E00;
         }
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg-dark); color: var(--text-primary); min-height: 100vh; padding: 20px; background: radial-gradient(circle at 0% 0%, #0a0a2a, #050515); }
-        .admin-header { background: rgba(255,255,255,0.05); backdrop-filter: blur(20px); border-radius: 30px; padding: 25px; border: 1px solid var(--border-glass); margin-bottom: 25px; text-align: center; }
-        .admin-header h1 { font-size: 32px; font-weight: 800; background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .admin-header p { color: var(--text-secondary); font-size: 14px; margin-top: 5px; }
-        .admin-badge { display: inline-block; background: var(--gradient); padding: 8px 20px; border-radius: 30px; font-size: 12px; font-weight: 700; margin-top: 10px; -webkit-text-fill-color: white; }
-        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-bottom: 25px; }
-        .stat-card { background: var(--bg-card); backdrop-filter: blur(20px); border: 1px solid var(--border-glass); border-radius: 25px; padding: 20px; text-align: center; transition: all 0.3s ease; }
-        .stat-card:hover { transform: translateY(-5px); border-color: var(--secondary); }
-        .stat-card .icon { font-size: 30px; margin-bottom: 10px; }
-        .stat-card .number { font-size: 28px; font-weight: 800; background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .stat-card .label { color: var(--text-secondary); font-size: 12px; margin-top: 5px; }
-        .admin-tabs { display: flex; gap: 10px; margin-bottom: 25px; overflow-x: auto; padding-bottom: 5px; flex-wrap: wrap; }
-        .admin-tab { padding: 12px 20px; background: var(--bg-card); border: 1px solid var(--border-glass); border-radius: 30px; cursor: pointer; font-weight: 600; font-size: 14px; white-space: nowrap; transition: all 0.3s ease; color: var(--text-secondary); }
-        .admin-tab.active { background: var(--gradient); border-color: transparent; color: white; -webkit-text-fill-color: white; }
-        .admin-tab:hover:not(.active) { border-color: var(--secondary); }
-        .tab-content { display: none; animation: fadeIn 0.4s ease; }
-        .tab-content.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-        .user-list { background: var(--bg-card); backdrop-filter: blur(20px); border: 1px solid var(--border-glass); border-radius: 25px; padding: 20px; overflow-x: auto; }
-        .withdraw-sub-tabs { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
-        .withdraw-sub-tab { padding: 10px 20px; background: rgba(255,255,255,0.03); border: 1px solid var(--border-glass); border-radius: 30px; cursor: pointer; font-weight: 600; font-size: 13px; transition: all 0.3s ease; color: var(--text-secondary); display: flex; align-items: center; gap: 8px; }
-        .withdraw-sub-tab .count { background: rgba(255,255,255,0.1); padding: 1px 10px; border-radius: 20px; font-size: 11px; }
-        .withdraw-sub-tab.active { background: var(--gradient); border-color: transparent; color: white; -webkit-text-fill-color: white; }
-        .withdraw-sub-tab.active .count { background: rgba(255,255,255,0.2); }
-        .withdraw-sub-tab:hover:not(.active) { border-color: var(--secondary); }
-        .withdraw-sub-content { display: none; animation: fadeIn 0.3s ease; }
-        .withdraw-sub-content.active { display: block; }
-        .user-item { display: flex; justify-content: space-between; align-items: center; padding: 15px 0; border-bottom: 1px solid rgba(255,255,255,0.05); flex-wrap: wrap; gap: 10px; }
-        .user-item:last-child { border-bottom: none; }
-        .user-item.banned { opacity: 0.5; background: rgba(255,0,110,0.1); border-radius: 15px; padding: 15px; }
-        .user-info { display: flex; align-items: center; gap: 15px; flex: 1; }
-        .user-avatar { width: 45px; height: 45px; border-radius: 50%; background: var(--gradient); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 18px; }
-        .user-details .user-name { font-weight: 600; }
-        .user-details .user-id { font-size: 12px; color: var(--text-secondary); }
-        .user-balance { font-weight: 700; color: var(--secondary); min-width: 80px; }
-        .user-actions { display: flex; gap: 8px; flex-wrap: wrap; }
-        .btn-sm { padding: 6px 14px; border: none; border-radius: 20px; font-weight: 600; font-size: 11px; cursor: pointer; transition: all 0.3s ease; }
-        .btn-sm:hover { transform: scale(1.05); }
-        .btn-edit { background: linear-gradient(135deg, #00BBF9, #9B5DE5); color: white; }
-        .btn-ban { background: linear-gradient(135deg, #FF006E, #FF9E00); color: white; }
-        .btn-unban { background: linear-gradient(135deg, #00F5D4, #00BBF9); color: #0a0a2a; }
-        .btn-add { background: linear-gradient(135deg, #00F5D4, #00BBF9); color: #0a0a2a; }
-        .btn-remove { background: linear-gradient(135deg, #FF006E, #FF9E00); color: white; }
-        .btn-approve { background: linear-gradient(135deg, #00F5D4, #00BBF9); color: #0a0a2a; }
-        .btn-reject { background: linear-gradient(135deg, #FF006E, #FF9E00); color: white; }
-        .btn-close-modal { background: rgba(255,255,255,0.1); color: white; }
-        .status-badge { display: inline-block; padding: 3px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; }
-        .status-active { background: rgba(0,245,212,0.2); color: #00F5D4; }
-        .status-banned { background: rgba(255,0,110,0.2); color: #FF006E; }
-        .status-pending { background: rgba(255,158,0,0.2); color: #FF9E00; }
-        .status-completed { background: rgba(0,245,212,0.2); color: #00F5D4; }
-        .status-failed { background: rgba(255,0,110,0.2); color: #FF006E; }
-        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); backdrop-filter: blur(10px); z-index: 1000; align-items: center; justify-content: center; padding: 20px; }
-        .modal-overlay.show { display: flex; }
-        .modal-content { background: #1a1a3a; border-radius: 30px; padding: 30px; max-width: 500px; width: 100%; border: 1px solid var(--border-glass); animation: modalIn 0.4s ease; max-height: 90vh; overflow-y: auto; }
-        @keyframes modalIn { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
-        .modal-content h2 { margin-bottom: 20px; font-size: 24px; }
-        .modal-content .info-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
-        .modal-content .info-row .label { color: var(--text-secondary); }
-        .modal-content .info-row .value { font-weight: 600; }
-        .modal-input-group { margin: 15px 0; }
-        .modal-input-group label { display: block; margin-bottom: 8px; color: var(--text-secondary); font-size: 14px; }
-        .modal-input-group input { width: 100%; padding: 12px 20px; background: rgba(255,255,255,0.06); border: 1px solid var(--border-glass); border-radius: 30px; color: white; font-size: 16px; outline: none; transition: all 0.3s; }
-        .modal-input-group input:focus { border-color: var(--secondary); box-shadow: 0 0 20px rgba(0,245,212,0.2); }
-        .modal-btn-group { display: flex; gap: 10px; margin-top: 20px; flex-wrap: wrap; }
-        .modal-btn-group .btn-sm { flex: 1; padding: 12px; font-size: 14px; min-width: 100px; }
-        .toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.9); backdrop-filter: blur(20px); padding: 15px 30px; border-radius: 30px; border: 1px solid var(--border-glass); color: white; font-weight: 600; z-index: 2000; display: none; animation: fadeIn 0.3s ease; max-width: 90%; text-align: center; }
-        .toast.success { border-color: var(--success); }
-        .toast.error { border-color: var(--danger); }
-        .toast.warning { border-color: var(--warning); }
-        .empty-state { text-align: center; padding: 40px 20px; color: var(--text-secondary); }
-        .empty-state i { font-size: 50px; margin-bottom: 15px; opacity: 0.3; }
-        .search-box { width: 100%; padding: 12px 20px; background: rgba(255,255,255,0.06); border: 1px solid var(--border-glass); border-radius: 30px; color: white; font-size: 14px; outline: none; margin-bottom: 15px; transition: all 0.3s; }
-        .search-box:focus { border-color: var(--secondary); }
-        .search-box::placeholder { color: var(--text-secondary); }
-        .action-log { background: rgba(255,255,255,0.03); border-radius: 15px; padding: 15px; margin-top: 10px; max-height: 300px; overflow-y: auto; }
-        .log-item { padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 13px; color: var(--text-secondary); }
-        .log-item .time { color: var(--text-secondary); font-size: 11px; }
-        .log-item .action { color: var(--secondary); font-weight: 600; }
-        .withdraw-count { background: var(--danger); color: white; border-radius: 50%; padding: 2px 8px; font-size: 11px; margin-left: 5px; }
-        .sync-status { font-size: 12px; color: var(--text-secondary); margin-top: 10px; padding: 8px 15px; background: rgba(255,255,255,0.05); border-radius: 20px; display: inline-block; }
-        @media (max-width: 600px) { .stats-grid { grid-template-columns: 1fr 1fr; } .admin-header h1 { font-size: 24px; } .user-item { flex-direction: column; align-items: stretch; } .user-actions { justify-content: flex-start; } .admin-tabs { flex-wrap: nowrap; overflow-x: auto; } .modal-btn-group { flex-direction: column; } .withdraw-sub-tabs { flex-wrap: nowrap; overflow-x: auto; } }
-        ::-webkit-scrollbar { width: 4px; } ::-webkit-scrollbar-track { background: rgba(255,255,255,0.05); } ::-webkit-scrollbar-thumb { background: var(--gradient); border-radius: 10px; }
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            min-height: 100vh;
+            padding: 20px;
+            background: radial-gradient(circle at 0% 0%, #0a0a2a, #050515);
+        }
+        .admin-header {
+            background: rgba(255,255,255,0.05);
+            backdrop-filter: blur(20px);
+            border-radius: 30px;
+            padding: 25px;
+            border: 1px solid var(--border-glass);
+            margin-bottom: 25px;
+            text-align: center;
+        }
+        .admin-header h1 {
+            font-size: 32px;
+            font-weight: 800;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .admin-header p {
+            color: var(--text-secondary);
+            font-size: 14px;
+            margin-top: 5px;
+        }
+        .admin-badge {
+            display: inline-block;
+            background: var(--gradient);
+            padding: 8px 20px;
+            border-radius: 30px;
+            font-size: 12px;
+            font-weight: 700;
+            margin-top: 10px;
+            -webkit-text-fill-color: white;
+        }
+        .sync-status {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-top: 10px;
+            padding: 8px 15px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 20px;
+            display: inline-block;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+        .stat-card {
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border-glass);
+            border-radius: 25px;
+            padding: 20px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        .stat-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--secondary);
+        }
+        .stat-card .icon {
+            font-size: 30px;
+            margin-bottom: 10px;
+        }
+        .stat-card .number {
+            font-size: 28px;
+            font-weight: 800;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .stat-card .label {
+            color: var(--text-secondary);
+            font-size: 12px;
+            margin-top: 5px;
+        }
+        .admin-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 25px;
+            overflow-x: auto;
+            padding-bottom: 5px;
+            flex-wrap: wrap;
+        }
+        .admin-tab {
+            padding: 12px 20px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-glass);
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            white-space: nowrap;
+            transition: all 0.3s ease;
+            color: var(--text-secondary);
+        }
+        .admin-tab.active {
+            background: var(--gradient);
+            border-color: transparent;
+            color: white;
+            -webkit-text-fill-color: white;
+        }
+        .admin-tab:hover:not(.active) {
+            border-color: var(--secondary);
+        }
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .user-list {
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border-glass);
+            border-radius: 25px;
+            padding: 20px;
+            overflow-x: auto;
+        }
+        .withdraw-sub-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        .withdraw-sub-tab {
+            padding: 10px 20px;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid var(--border-glass);
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 13px;
+            transition: all 0.3s ease;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .withdraw-sub-tab .count {
+            background: rgba(255,255,255,0.1);
+            padding: 1px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+        }
+        .withdraw-sub-tab.active {
+            background: var(--gradient);
+            border-color: transparent;
+            color: white;
+            -webkit-text-fill-color: white;
+        }
+        .withdraw-sub-tab.active .count {
+            background: rgba(255,255,255,0.2);
+        }
+        .withdraw-sub-tab:hover:not(.active) {
+            border-color: var(--secondary);
+        }
+        .withdraw-sub-content {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+        .withdraw-sub-content.active {
+            display: block;
+        }
+        .user-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .user-item:last-child {
+            border-bottom: none;
+        }
+        .user-item.banned {
+            opacity: 0.5;
+            background: rgba(255,0,110,0.1);
+            border-radius: 15px;
+            padding: 15px;
+        }
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex: 1;
+        }
+        .user-avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: var(--gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 18px;
+        }
+        .user-details .user-name {
+            font-weight: 600;
+        }
+        .user-details .user-id {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+        .user-balance {
+            font-weight: 700;
+            color: var(--secondary);
+            min-width: 80px;
+        }
+        .user-actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .btn-sm {
+            padding: 6px 14px;
+            border: none;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 11px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .btn-sm:hover {
+            transform: scale(1.05);
+        }
+        .btn-edit {
+            background: linear-gradient(135deg, #00BBF9, #9B5DE5);
+            color: white;
+        }
+        .btn-ban {
+            background: linear-gradient(135deg, #FF006E, #FF9E00);
+            color: white;
+        }
+        .btn-unban {
+            background: linear-gradient(135deg, #00F5D4, #00BBF9);
+            color: #0a0a2a;
+        }
+        .btn-add {
+            background: linear-gradient(135deg, #00F5D4, #00BBF9);
+            color: #0a0a2a;
+        }
+        .btn-remove {
+            background: linear-gradient(135deg, #FF006E, #FF9E00);
+            color: white;
+        }
+        .btn-approve {
+            background: linear-gradient(135deg, #00F5D4, #00BBF9);
+            color: #0a0a2a;
+        }
+        .btn-reject {
+            background: linear-gradient(135deg, #FF006E, #FF9E00);
+            color: white;
+        }
+        .btn-close-modal {
+            background: rgba(255,255,255,0.1);
+            color: white;
+        }
+        .status-badge {
+            display: inline-block;
+            padding: 3px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+        .status-active {
+            background: rgba(0,245,212,0.2);
+            color: #00F5D4;
+        }
+        .status-banned {
+            background: rgba(255,0,110,0.2);
+            color: #FF006E;
+        }
+        .status-pending {
+            background: rgba(255,158,0,0.2);
+            color: #FF9E00;
+        }
+        .status-completed {
+            background: rgba(0,245,212,0.2);
+            color: #00F5D4;
+        }
+        .status-failed {
+            background: rgba(255,0,110,0.2);
+            color: #FF006E;
+        }
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .modal-overlay.show {
+            display: flex;
+        }
+        .modal-content {
+            background: #1a1a3a;
+            border-radius: 30px;
+            padding: 30px;
+            max-width: 500px;
+            width: 100%;
+            border: 1px solid var(--border-glass);
+            animation: modalIn 0.4s ease;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        @keyframes modalIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        .modal-content h2 {
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+        .modal-content .info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        .modal-content .info-row .label {
+            color: var(--text-secondary);
+        }
+        .modal-content .info-row .value {
+            font-weight: 600;
+        }
+        .modal-input-group {
+            margin: 15px 0;
+        }
+        .modal-input-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+        .modal-input-group input {
+            width: 100%;
+            padding: 12px 20px;
+            background: rgba(255,255,255,0.06);
+            border: 1px solid var(--border-glass);
+            border-radius: 30px;
+            color: white;
+            font-size: 16px;
+            outline: none;
+            transition: all 0.3s;
+        }
+        .modal-input-group input:focus {
+            border-color: var(--secondary);
+            box-shadow: 0 0 20px rgba(0,245,212,0.2);
+        }
+        .modal-btn-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        .modal-btn-group .btn-sm {
+            flex: 1;
+            padding: 12px;
+            font-size: 14px;
+            min-width: 100px;
+        }
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.9);
+            backdrop-filter: blur(20px);
+            padding: 15px 30px;
+            border-radius: 30px;
+            border: 1px solid var(--border-glass);
+            color: white;
+            font-weight: 600;
+            z-index: 2000;
+            display: none;
+            animation: fadeIn 0.3s ease;
+            max-width: 90%;
+            text-align: center;
+        }
+        .toast.success {
+            border-color: var(--success);
+        }
+        .toast.error {
+            border-color: var(--danger);
+        }
+        .toast.warning {
+            border-color: var(--warning);
+        }
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-secondary);
+        }
+        .empty-state i {
+            font-size: 50px;
+            margin-bottom: 15px;
+            opacity: 0.3;
+        }
+        .search-box {
+            width: 100%;
+            padding: 12px 20px;
+            background: rgba(255,255,255,0.06);
+            border: 1px solid var(--border-glass);
+            border-radius: 30px;
+            color: white;
+            font-size: 14px;
+            outline: none;
+            margin-bottom: 15px;
+            transition: all 0.3s;
+        }
+        .search-box:focus {
+            border-color: var(--secondary);
+        }
+        .search-box::placeholder {
+            color: var(--text-secondary);
+        }
+        .action-log {
+            background: rgba(255,255,255,0.03);
+            border-radius: 15px;
+            padding: 15px;
+            margin-top: 10px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .log-item {
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+        .log-item .time {
+            color: var(--text-secondary);
+            font-size: 11px;
+        }
+        .log-item .action {
+            color: var(--secondary);
+            font-weight: 600;
+        }
+        .withdraw-count {
+            background: var(--danger);
+            color: white;
+            border-radius: 50%;
+            padding: 2px 8px;
+            font-size: 11px;
+            margin-left: 5px;
+        }
+        @media (max-width: 600px) {
+            .stats-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            .admin-header h1 {
+                font-size: 24px;
+            }
+            .user-item {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .user-actions {
+                justify-content: flex-start;
+            }
+            .admin-tabs {
+                flex-wrap: nowrap;
+                overflow-x: auto;
+            }
+            .modal-btn-group {
+                flex-direction: column;
+            }
+            .withdraw-sub-tabs {
+                flex-wrap: nowrap;
+                overflow-x: auto;
+            }
+        }
+        ::-webkit-scrollbar {
+            width: 4px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(255,255,255,0.05);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--gradient);
+            border-radius: 10px;
+        }
     </style>
 </head>
 <body>
@@ -118,7 +542,7 @@
         <div class="sync-status" id="syncStatus">🔄 Syncing...</div>
     </div>
 
-    <div class="stats-grid" id="statsGrid">
+    <div class="stats-grid">
         <div class="stat-card">
             <div class="icon">👤</div>
             <div class="number" id="totalUsers">0</div>
@@ -233,17 +657,27 @@
         // ==========================================
         // CONFIGURATION
         // ==========================================
-        const BOT_TOKEN = "8252246058:AAE51zYPDXgnDdgOCCZh7_YwM6d2WyYsjaI";
-        const ADMIN_CHAT_ID = "7694112804";
-        const STORAGE_KEY = 'incomeZoneAdminData';
+        var BOT_TOKEN = "8252246058:AAE51zYPDXgnDdgOCCZh7_YwM6d2WyYsjaI";
+        var ADMIN_CHAT_ID = "7694112804";
+        var STORAGE_KEY = 'incomeZoneAdminData';
 
-        let adminData = { users: {}, withdrawals: [], logs: [], settings: { minWithdraw: 10000, adReward: 10 } };
-        let currentUserId = null;
+        var adminData = {
+            users: {},
+            withdrawals: [],
+            logs: [],
+            settings: {
+                minWithdraw: 10000,
+                adReward: 10
+            }
+        };
+        var currentUserId = null;
+        var lastUpdateId = 0;
+        var isFirstLoad = true;
 
         // ==========================================
         // TELEGRAM
         // ==========================================
-        let tg = window.Telegram?.WebApp;
+        var tg = window.Telegram?.WebApp;
         if (tg) {
             tg.expand();
             tg.enableClosingConfirmation();
@@ -253,111 +687,154 @@
         // DATA FUNCTIONS
         // ==========================================
         function loadData() {
-            const saved = localStorage.getItem(STORAGE_KEY);
-            if (saved) {
-                try { adminData = JSON.parse(saved); } catch (e) {}
+            try {
+                var saved = localStorage.getItem(STORAGE_KEY);
+                if (saved) {
+                    adminData = JSON.parse(saved);
+                }
+            } catch (e) {
+                console.error('Error loading data:', e);
             }
             renderAll();
         }
 
         function saveData() {
-            try { localStorage.setItem(STORAGE_KEY, JSON.stringify(adminData)); } catch (e) {}
+            try {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(adminData));
+            } catch (e) {
+                console.error('Error saving data:', e);
+            }
         }
 
         function addLog(action, userId, details) {
-            adminData.logs.unshift({ action, userId: userId || 'admin', details: details || '', time: new Date().toISOString() });
-            if (adminData.logs.length > 200) adminData.logs.pop();
-            saveData();
+            try {
+                adminData.logs.unshift({
+                    action: action,
+                    userId: userId || 'admin',
+                    details: details || '',
+                    time: new Date().toISOString()
+                });
+                if (adminData.logs.length > 200) {
+                    adminData.logs.pop();
+                }
+                saveData();
+            } catch (e) {
+                console.error('Error adding log:', e);
+            }
         }
 
         // ==========================================
         // TELEGRAM BOT থেকে ইউজার ডেটা পড়ুন
         // ==========================================
-        let lastUpdateId = 0;
-
-        async function fetchUsersFromBot() {
+        function fetchUsersFromBot() {
             try {
-                document.getElementById('syncStatus').textContent = '🔄 Syncing...';
-                document.getElementById('syncStatus').style.color = 'var(--text-secondary)';
+                var syncStatus = document.getElementById('syncStatus');
+                if (syncStatus) {
+                    syncStatus.textContent = '🔄 Syncing...';
+                    syncStatus.style.color = 'var(--text-secondary)';
+                }
 
-                // বট থেকে মেসেজ ইতিহাস পড়ুন
-                const url = `https://api.telegram.org/bot${BOT_TOKEN}/getUpdates?limit=100`;
+                var url = 'https://api.telegram.org/bot' + BOT_TOKEN + '/getUpdates?limit=100';
                 if (lastUpdateId > 0) {
-                    url += `&offset=${lastUpdateId + 1}`;
-                }
-                
-                const response = await fetch(url);
-                const data = await response.json();
-                
-                if (!data.ok) {
-                    console.error('❌ Bot API error:', data);
-                    document.getElementById('syncStatus').textContent = '⚠️ Sync Error';
-                    document.getElementById('syncStatus').style.color = '#FF006E';
-                    return;
+                    url = url + '&offset=' + (lastUpdateId + 1);
                 }
 
-                if (data.result.length === 0) {
-                    document.getElementById('syncStatus').textContent = '✅ No new data';
-                    document.getElementById('syncStatus').style.color = '#00F5D4';
-                    return;
-                }
+                fetch(url)
+                    .then(function(response) {
+                        return response.json();
+                    })
+                    .then(function(data) {
+                        if (!data.ok) {
+                            console.error('Bot API error:', data);
+                            if (syncStatus) {
+                                syncStatus.textContent = '⚠️ Sync Error';
+                                syncStatus.style.color = '#FF006E';
+                            }
+                            return;
+                        }
 
-                // সর্বশেষ updateId সংরক্ষণ করুন
-                if (data.result.length > 0) {
-                    lastUpdateId = data.result[data.result.length - 1].update_id;
-                }
+                        if (data.result.length === 0) {
+                            if (syncStatus) {
+                                syncStatus.textContent = '✅ No new data';
+                                syncStatus.style.color = '#00F5D4';
+                            }
+                            if (isFirstLoad) {
+                                isFirstLoad = false;
+                                renderAll();
+                            }
+                            return;
+                        }
 
-                const users = {};
-                const processedIds = new Set();
+                        if (data.result.length > 0) {
+                            lastUpdateId = data.result[data.result.length - 1].update_id;
+                        }
 
-                data.result.forEach(update => {
-                    if (update.message && update.message.text) {
-                        const text = update.message.text;
-                        
-                        // ইউজার ডেটা এক্সট্র্যাক্ট করুন
-                        if (text.includes('📊 *USER DATA UPDATE*')) {
-                            const nameMatch = text.match(/👤 \*Name:\* (.+)/);
-                            const idMatch = text.match(/🆔 \*ID:\* (.+)/);
-                            const balanceMatch = text.match(/💰 \*Balance:\* (.+)/);
-                            const adsMatch = text.match(/👁️ \*Ads Watched:\* (.+)/);
-                            const earningsMatch = text.match(/📈 \*Today\'s Earnings:\* (.+)/);
+                        var users = {};
+                        var processedIds = new Set();
 
-                            if (idMatch) {
-                                const userId = idMatch[1].trim();
-                                if (!processedIds.has(userId)) {
-                                    processedIds.add(userId);
-                                    users[userId] = {
-                                        name: nameMatch ? nameMatch[1].trim() : 'Unknown',
-                                        balance: balanceMatch ? parseInt(balanceMatch[1].trim()) : 0,
-                                        adsWatched: adsMatch ? parseInt(adsMatch[1].trim()) : 0,
-                                        todayEarnings: earningsMatch ? parseInt(earningsMatch[1].trim()) : 0,
-                                        banned: false,
-                                        lastActive: new Date().toISOString()
-                                    };
+                        for (var i = 0; i < data.result.length; i++) {
+                            var update = data.result[i];
+                            if (update.message && update.message.text) {
+                                var text = update.message.text;
+                                if (text.indexOf('📊 *USER DATA UPDATE*') !== -1) {
+                                    var nameMatch = text.match(/👤 \*Name:\* (.+)/);
+                                    var idMatch = text.match(/🆔 \*ID:\* (.+)/);
+                                    var balanceMatch = text.match(/💰 \*Balance:\* (.+)/);
+                                    var adsMatch = text.match(/👁️ \*Ads Watched:\* (.+)/);
+                                    var earningsMatch = text.match(/📈 \*Today\'s Earnings:\* (.+)/);
+
+                                    if (idMatch) {
+                                        var userId = idMatch[1].trim();
+                                        if (!processedIds.has(userId)) {
+                                            processedIds.add(userId);
+                                            users[userId] = {
+                                                name: nameMatch ? nameMatch[1].trim() : 'Unknown',
+                                                balance: balanceMatch ? parseInt(balanceMatch[1].trim()) : 0,
+                                                adsWatched: adsMatch ? parseInt(adsMatch[1].trim()) : 0,
+                                                todayEarnings: earningsMatch ? parseInt(earningsMatch[1].trim()) : 0,
+                                                banned: false,
+                                                lastActive: new Date().toISOString()
+                                            };
+                                        }
+                                    }
                                 }
                             }
                         }
-                    }
-                });
 
-                // অ্যাডমিন ডেটা আপডেট করুন
-                if (Object.keys(users).length > 0) {
-                    Object.keys(users).forEach(key => {
-                        adminData.users[key] = users[key];
+                        var userKeys = Object.keys(users);
+                        if (userKeys.length > 0) {
+                            for (var j = 0; j < userKeys.length; j++) {
+                                var key = userKeys[j];
+                                adminData.users[key] = users[key];
+                            }
+                            saveData();
+                            renderAll();
+                            console.log('Users fetched from bot:', userKeys.length);
+                            if (syncStatus) {
+                                syncStatus.textContent = '✅ ' + userKeys.length + ' users synced';
+                                syncStatus.style.color = '#00F5D4';
+                            }
+                        } else {
+                            if (syncStatus) {
+                                syncStatus.textContent = '✅ No new users';
+                                syncStatus.style.color = '#00F5D4';
+                            }
+                        }
+
+                        if (isFirstLoad) {
+                            isFirstLoad = false;
+                            renderAll();
+                        }
+                    })
+                    .catch(function(error) {
+                        console.error('Error fetching from bot:', error);
+                        if (syncStatus) {
+                            syncStatus.textContent = '⚠️ Connection Error';
+                            syncStatus.style.color = '#FF006E';
+                        }
                     });
-                    saveData();
-                    renderAll();
-                    console.log('✅ Users fetched from bot:', Object.keys(users).length);
-                    document.getElementById('syncStatus').textContent = `✅ ${Object.keys(users).length} users synced`;
-                    document.getElementById('syncStatus').style.color = '#00F5D4';
-                } else {
-                    document.getElementById('syncStatus').textContent = '✅ No new users';
-                    document.getElementById('syncStatus').style.color = '#00F5D4';
-                }
             } catch (e) {
-                console.error('❌ Error fetching from bot:', e);
-                document.getElementById('syncStatus').textContent = '⚠️ Connection Error';
-                document.getElementById('syncStatus').style.color = '#FF006E';
+                console.error('Error in fetchUsersFromBot:', e);
             }
         }
 
@@ -365,122 +842,196 @@
         // RENDER FUNCTIONS
         // ==========================================
         function renderStats() {
-            const users = Object.values(adminData.users);
-            const totalUsers = users.length;
-            const totalBalance = users.reduce((sum, u) => sum + (u.balance || 0), 0);
-            const banned = users.filter(u => u.banned).length;
-            const pending = adminData.withdrawals.filter(w => w.status === 'pending').length;
+            try {
+                var users = Object.values(adminData.users);
+                var totalUsers = users.length;
+                var totalBalance = 0;
+                var banned = 0;
 
-            document.getElementById('totalUsers').textContent = totalUsers;
-            document.getElementById('totalBalance').textContent = totalBalance.toLocaleString();
-            document.getElementById('bannedUsers').textContent = banned;
-            document.getElementById('pendingWithdrawals').textContent = pending;
-            document.getElementById('withdrawCount').textContent = pending;
+                for (var i = 0; i < users.length; i++) {
+                    totalBalance = totalBalance + (users[i].balance || 0);
+                    if (users[i].banned) {
+                        banned++;
+                    }
+                }
+
+                var pending = 0;
+                for (var j = 0; j < adminData.withdrawals.length; j++) {
+                    if (adminData.withdrawals[j].status === 'pending') {
+                        pending++;
+                    }
+                }
+
+                document.getElementById('totalUsers').textContent = totalUsers;
+                document.getElementById('totalBalance').textContent = totalBalance.toLocaleString();
+                document.getElementById('bannedUsers').textContent = banned;
+                document.getElementById('pendingWithdrawals').textContent = pending;
+                document.getElementById('withdrawCount').textContent = pending;
+            } catch (e) {
+                console.error('Error rendering stats:', e);
+            }
         }
 
         function renderUsers() {
-            const container = document.getElementById('userList');
-            const searchTerm = document.getElementById('searchUser')?.value?.toLowerCase() || '';
+            try {
+                var container = document.getElementById('userList');
+                var searchInput = document.getElementById('searchUser');
+                var searchTerm = searchInput ? searchInput.value.toLowerCase() : '';
 
-            let users = Object.entries(adminData.users);
+                var userEntries = Object.entries(adminData.users);
 
-            if (searchTerm) {
-                users = users.filter(([id, data]) =>
-                    data.name?.toLowerCase().includes(searchTerm) ||
-                    id.toLowerCase().includes(searchTerm)
-                );
+                if (searchTerm) {
+                    userEntries = userEntries.filter(function(item) {
+                        var id = item[0];
+                        var data = item[1];
+                        return (data.name && data.name.toLowerCase().indexOf(searchTerm) !== -1) ||
+                            (id && id.toLowerCase().indexOf(searchTerm) !== -1);
+                    });
+                }
+
+                if (userEntries.length === 0) {
+                    container.innerHTML = '<div class="empty-state"><i class="fas fa-users"></i><p>' +
+                        (searchTerm ? 'No users found matching "' + searchTerm + '"' : 'No users yet') +
+                        '</p></div>';
+                    return;
+                }
+
+                var html = '';
+                for (var i = 0; i < userEntries.length; i++) {
+                    var id = userEntries[i][0];
+                    var data = userEntries[i][1];
+                    var bannedClass = data.banned ? 'banned' : '';
+                    var statusBadge = data.banned ?
+                        '<span class="status-badge status-banned">🚫 BANNED</span>' :
+                        '<span class="status-badge status-active">✅ ACTIVE</span>';
+
+                    html = html + '<div class="user-item ' + bannedClass + '">';
+                    html = html + '<div class="user-info">';
+                    html = html + '<div class="user-avatar">' + (data.name ? data.name[0].toUpperCase() : '?') + '</div>';
+                    html = html + '<div class="user-details">';
+                    html = html + '<div class="user-name">' + (data.name || 'Unknown') + ' ' + statusBadge + '</div>';
+                    html = html + '<div class="user-id">🆔 ' + id + '</div>';
+                    html = html + '</div></div>';
+                    html = html + '<div class="user-balance">💰 ' + (data.balance || 0).toLocaleString() + '</div>';
+                    html = html + '<div class="user-actions">';
+                    html = html + '<button class="btn-sm btn-edit" onclick="openUserActions(\'' + id + '\')">⚡ Manage</button>';
+                    html = html + '</div></div>';
+                }
+
+                container.innerHTML = html;
+            } catch (e) {
+                console.error('Error rendering users:', e);
             }
-
-            if (users.length === 0) {
-                container.innerHTML = `
-                    <div class="empty-state">
-                        <i class="fas fa-users"></i>
-                        <p>${searchTerm ? 'No users found matching "' + searchTerm + '"' : 'No users yet. Ask users to open the app!'}</p>
-                    </div>
-                `;
-                return;
-            }
-
-            container.innerHTML = users.map(([id, data]) => `
-                <div class="user-item ${data.banned ? 'banned' : ''}">
-                    <div class="user-info">
-                        <div class="user-avatar">${data.name?.[0]?.toUpperCase() || '?'}</div>
-                        <div class="user-details">
-                            <div class="user-name">${data.name || 'Unknown'} 
-                                <span class="status-badge ${data.banned ? 'status-banned' : 'status-active'}">
-                                    ${data.banned ? '🚫 BANNED' : '✅ ACTIVE'}
-                                </span>
-                            </div>
-                            <div class="user-id">🆔 ${id}</div>
-                        </div>
-                    </div>
-                    <div class="user-balance">💰 ${(data.balance || 0).toLocaleString()}</div>
-                    <div class="user-actions">
-                        <button class="btn-sm btn-edit" onclick="openUserActions('${id}')">⚡ Manage</button>
-                    </div>
-                </div>
-            `).join('');
         }
 
         function renderWithdrawals() {
-            const withdrawals = adminData.withdrawals;
-            const pending = withdrawals.filter(w => w.status === 'pending');
-            const approved = withdrawals.filter(w => w.status === 'completed');
-            const rejected = withdrawals.filter(w => w.status === 'failed');
+            try {
+                var withdrawals = adminData.withdrawals;
 
-            document.getElementById('pendingCount').textContent = pending.length;
-            document.getElementById('approvedCount').textContent = approved.length;
-            document.getElementById('rejectedCount').textContent = rejected.length;
+                var pending = [];
+                var approved = [];
+                var rejected = [];
 
-            renderWithdrawSubList('pendingList', pending, 'pending');
-            renderWithdrawSubList('approvedList', approved, 'completed');
-            renderWithdrawSubList('rejectedList', rejected, 'failed');
+                for (var i = 0; i < withdrawals.length; i++) {
+                    if (withdrawals[i].status === 'pending') {
+                        pending.push(withdrawals[i]);
+                    } else if (withdrawals[i].status === 'completed') {
+                        approved.push(withdrawals[i]);
+                    } else if (withdrawals[i].status === 'failed') {
+                        rejected.push(withdrawals[i]);
+                    }
+                }
+
+                document.getElementById('pendingCount').textContent = pending.length;
+                document.getElementById('approvedCount').textContent = approved.length;
+                document.getElementById('rejectedCount').textContent = rejected.length;
+
+                renderWithdrawSubList('pendingList', pending, 'pending');
+                renderWithdrawSubList('approvedList', approved, 'completed');
+                renderWithdrawSubList('rejectedList', rejected, 'failed');
+            } catch (e) {
+                console.error('Error rendering withdrawals:', e);
+            }
         }
 
         function renderWithdrawSubList(containerId, items, status) {
-            const container = document.getElementById(containerId);
-            if (items.length === 0) {
-                const msgs = { pending: 'No pending withdrawal requests', completed: 'No approved withdrawals yet', failed: 'No rejected withdrawals yet' };
-                container.innerHTML = `<div class="empty-state"><i class="fas fa-${status === 'pending' ? 'clock' : status === 'completed' ? 'check-circle' : 'times-circle'}"></i><p>${msgs[status]}</p></div>`;
-                return;
+            try {
+                var container = document.getElementById(containerId);
+
+                if (items.length === 0) {
+                    var messages = {
+                        'pending': 'No pending withdrawal requests',
+                        'completed': 'No approved withdrawals yet',
+                        'failed': 'No rejected withdrawals yet'
+                    };
+                    var iconClass = status === 'pending' ? 'clock' : (status === 'completed' ? 'check-circle' :
+                    'times-circle');
+                    container.innerHTML = '<div class="empty-state"><i class="fas fa-' + iconClass +
+                        '"></i><p>' + messages[status] + '</p></div>';
+                    return;
+                }
+
+                var html = '';
+                for (var i = 0; i < items.length; i++) {
+                    var w = items[i];
+                    var realIndex = adminData.withdrawals.indexOf(w);
+
+                    html = html + '<div class="user-item">';
+                    html = html + '<div class="user-info">';
+                    html = html + '<div class="user-avatar">' + (w.userName ? w.userName[0].toUpperCase() : '?') + '</div>';
+                    html = html + '<div class="user-details">';
+                    html = html + '<div class="user-name">' + (w.userName || 'Unknown') + '</div>';
+                    html = html + '<div class="user-id">📱 ' + w.bkashNumber + ' • ' + new Date(w.date).toLocaleString() +
+                        '</div>';
+                    html = html + '</div></div>';
+                    html = html + '<div class="user-balance">💰 ' + w.amount.toLocaleString() + '</div>';
+                    html = html + '<div class="user-actions">';
+                    html = html + '<span class="status-badge status-' + w.status + '">' + w.status.toUpperCase() +
+                    '</span>';
+
+                    if (w.status === 'pending') {
+                        html = html +
+                            '<button class="btn-sm btn-approve" onclick="approveWithdrawal(' + realIndex +
+                            ')">✅</button>';
+                        html = html +
+                            '<button class="btn-sm btn-reject" onclick="rejectWithdrawal(' + realIndex +
+                            ')">❌</button>';
+                    }
+
+                    html = html + '</div></div>';
+                }
+
+                container.innerHTML = html;
+            } catch (e) {
+                console.error('Error rendering withdraw sub list:', e);
             }
-            container.innerHTML = items.map((w) => {
-                const realIndex = adminData.withdrawals.indexOf(w);
-                return `
-                    <div class="user-item">
-                        <div class="user-info">
-                            <div class="user-avatar">${w.userName?.[0]?.toUpperCase() || '?'}</div>
-                            <div class="user-details">
-                                <div class="user-name">${w.userName || 'Unknown'}</div>
-                                <div class="user-id">📱 ${w.bkashNumber} • ${new Date(w.date).toLocaleString()}</div>
-                            </div>
-                        </div>
-                        <div class="user-balance">💰 ${w.amount.toLocaleString()}</div>
-                        <div class="user-actions">
-                            <span class="status-badge status-${w.status}">${w.status.toUpperCase()}</span>
-                            ${w.status === 'pending' ? `
-                                <button class="btn-sm btn-approve" onclick="approveWithdrawal(${realIndex})">✅</button>
-                                <button class="btn-sm btn-reject" onclick="rejectWithdrawal(${realIndex})">❌</button>
-                            ` : ''}
-                        </div>
-                    </div>
-                `;
-            }).join('');
         }
 
         function renderLogs() {
-            const container = document.getElementById('actionLogs');
-            if (adminData.logs.length === 0) {
-                container.innerHTML = `<div class="empty-state"><i class="fas fa-clock"></i><p>No actions logged yet</p></div>`;
-                return;
+            try {
+                var container = document.getElementById('actionLogs');
+
+                if (adminData.logs.length === 0) {
+                    container.innerHTML = '<div class="empty-state"><i class="fas fa-clock"></i><p>No actions logged yet</p></div>';
+                    return;
+                }
+
+                var html = '';
+                for (var i = 0; i < adminData.logs.length; i++) {
+                    var log = adminData.logs[i];
+                    html = html + '<div class="log-item">';
+                    html = html + '<span class="time">' + new Date(log.time).toLocaleString() + '</span>';
+                    html = html + '<span class="action">' + log.action + '</span>';
+                    if (log.details) {
+                        html = html + '— ' + log.details;
+                    }
+                    html = html + '</div>';
+                }
+
+                container.innerHTML = html;
+            } catch (e) {
+                console.error('Error rendering logs:', e);
             }
-            container.innerHTML = adminData.logs.map(log => `
-                <div class="log-item">
-                    <span class="time">${new Date(log.time).toLocaleString()}</span>
-                    <span class="action">${log.action}</span>
-                    ${log.details ? `— ${log.details}` : ''}
-                </div>
-            `).join('');
         }
 
         function renderAll() {
@@ -494,175 +1045,343 @@
         // USER ACTIONS
         // ==========================================
         function openUserActions(userId) {
-            currentUserId = userId;
-            const user = adminData.users[userId];
-            if (!user) { showToast('User not found', 'error'); return; }
+            try {
+                currentUserId = userId;
+                var user = adminData.users[userId];
+                if (!user) {
+                    showToast('User not found', 'error');
+                    return;
+                }
 
-            document.getElementById('modalTitle').textContent = `👤 ${user.name || 'User'}`;
-            document.getElementById('modalName').textContent = user.name || 'Unknown';
-            document.getElementById('modalId').textContent = userId;
-            document.getElementById('modalBalance').textContent = (user.balance || 0).toLocaleString() + ' 🪙';
-            document.getElementById('modalAds').textContent = user.adsWatched || 0;
-            document.getElementById('modalStatus').innerHTML = user.banned ? '🚫 BANNED' : '✅ ACTIVE';
+                document.getElementById('modalTitle').textContent = '👤 ' + (user.name || 'User');
+                document.getElementById('modalName').textContent = user.name || 'Unknown';
+                document.getElementById('modalId').textContent = userId;
+                document.getElementById('modalBalance').textContent = (user.balance || 0).toLocaleString() + ' 🪙';
+                document.getElementById('modalAds').textContent = user.adsWatched || 0;
+                document.getElementById('modalStatus').innerHTML = user.banned ? '🚫 BANNED' : '✅ ACTIVE';
 
-            document.getElementById('banBtn').textContent = user.banned ? '✅ Unban User' : '🚫 Ban User';
-            document.getElementById('banBtn').className = user.banned ? 'btn-sm btn-unban' : 'btn-sm btn-ban';
+                var banBtn = document.getElementById('banBtn');
+                if (user.banned) {
+                    banBtn.textContent = '✅ Unban User';
+                    banBtn.className = 'btn-sm btn-unban';
+                } else {
+                    banBtn.textContent = '🚫 Ban User';
+                    banBtn.className = 'btn-sm btn-ban';
+                }
 
-            document.getElementById('addCoinsInput').value = '';
-            document.getElementById('removeCoinsInput').value = '';
+                document.getElementById('addCoinsInput').value = '';
+                document.getElementById('removeCoinsInput').value = '';
 
-            document.getElementById('userActionModal').classList.add('show');
+                document.getElementById('userActionModal').classList.add('show');
+            } catch (e) {
+                console.error('Error opening user actions:', e);
+            }
         }
 
         function closeModal() {
-            document.getElementById('userActionModal').classList.remove('show');
-            currentUserId = null;
+            try {
+                document.getElementById('userActionModal').classList.remove('show');
+                currentUserId = null;
+            } catch (e) {
+                console.error('Error closing modal:', e);
+            }
         }
 
         function addBalance() {
-            const amount = parseInt(document.getElementById('addCoinsInput').value);
-            if (!amount || amount <= 0) { showToast('Enter valid amount', 'error'); return; }
-            if (!currentUserId) { showToast('No user selected', 'error'); return; }
+            try {
+                var input = document.getElementById('addCoinsInput');
+                var amount = parseInt(input.value);
 
-            const user = adminData.users[currentUserId];
-            if (!user) { showToast('User not found', 'error'); return; }
+                if (!amount || amount <= 0) {
+                    showToast('Enter valid amount', 'error');
+                    return;
+                }
+                if (!currentUserId) {
+                    showToast('No user selected', 'error');
+                    return;
+                }
 
-            user.balance = (user.balance || 0) + amount;
-            saveData();
-            addLog('balance_added', currentUserId, `Added ${amount} coins to ${user.name}`);
-            renderAll();
-            showToast(`✅ Added ${amount} coins to ${user.name}`, 'success');
-            openUserActions(currentUserId);
+                var user = adminData.users[currentUserId];
+                if (!user) {
+                    showToast('User not found', 'error');
+                    return;
+                }
+
+                user.balance = (user.balance || 0) + amount;
+                saveData();
+                addLog('balance_added', currentUserId, 'Added ' + amount + ' coins to ' + user.name);
+                renderAll();
+                showToast('✅ Added ' + amount + ' coins to ' + user.name, 'success');
+                openUserActions(currentUserId);
+            } catch (e) {
+                console.error('Error adding balance:', e);
+                showToast('Error adding balance', 'error');
+            }
         }
 
         function removeBalance() {
-            const amount = parseInt(document.getElementById('removeCoinsInput').value);
-            if (!amount || amount <= 0) { showToast('Enter valid amount', 'error'); return; }
-            if (!currentUserId) { showToast('No user selected', 'error'); return; }
+            try {
+                var input = document.getElementById('removeCoinsInput');
+                var amount = parseInt(input.value);
 
-            const user = adminData.users[currentUserId];
-            if (!user) { showToast('User not found', 'error'); return; }
+                if (!amount || amount <= 0) {
+                    showToast('Enter valid amount', 'error');
+                    return;
+                }
+                if (!currentUserId) {
+                    showToast('No user selected', 'error');
+                    return;
+                }
 
-            if ((user.balance || 0) < amount) {
-                showToast(`❌ Insufficient balance! User has ${user.balance} coins`, 'error');
-                return;
+                var user = adminData.users[currentUserId];
+                if (!user) {
+                    showToast('User not found', 'error');
+                    return;
+                }
+
+                if ((user.balance || 0) < amount) {
+                    showToast('❌ Insufficient balance! User has ' + user.balance + ' coins', 'error');
+                    return;
+                }
+
+                user.balance = (user.balance || 0) - amount;
+                saveData();
+                addLog('balance_removed', currentUserId, 'Removed ' + amount + ' coins from ' + user.name);
+                renderAll();
+                showToast('✅ Removed ' + amount + ' coins from ' + user.name, 'warning');
+                openUserActions(currentUserId);
+            } catch (e) {
+                console.error('Error removing balance:', e);
+                showToast('Error removing balance', 'error');
             }
-
-            user.balance = (user.balance || 0) - amount;
-            saveData();
-            addLog('balance_removed', currentUserId, `Removed ${amount} coins from ${user.name}`);
-            renderAll();
-            showToast(`✅ Removed ${amount} coins from ${user.name}`, 'warning');
-            openUserActions(currentUserId);
         }
 
         function toggleBan() {
-            if (!currentUserId) { showToast('No user selected', 'error'); return; }
+            try {
+                if (!currentUserId) {
+                    showToast('No user selected', 'error');
+                    return;
+                }
 
-            const user = adminData.users[currentUserId];
-            if (!user) { showToast('User not found', 'error'); return; }
+                var user = adminData.users[currentUserId];
+                if (!user) {
+                    showToast('User not found', 'error');
+                    return;
+                }
 
-            user.banned = !user.banned;
-            saveData();
-            addLog(user.banned ? 'user_banned' : 'user_unbanned', currentUserId, `${user.name} ${user.banned ? 'banned' : 'unbanned'}`);
-            renderAll();
-            showToast(`${user.banned ? '🚫 Banned' : '✅ Unbanned'} ${user.name}`, user.banned ? 'error' : 'success');
-            openUserActions(currentUserId);
+                user.banned = !user.banned;
+                saveData();
+                addLog(user.banned ? 'user_banned' : 'user_unbanned', currentUserId, user.name + ' ' + (user.banned ?
+                    'banned' : 'unbanned'));
+                renderAll();
+                showToast((user.banned ? '🚫 Banned' : '✅ Unbanned') + ' ' + user.name, user.banned ? 'error' :
+                'success');
+                openUserActions(currentUserId);
+            } catch (e) {
+                console.error('Error toggling ban:', e);
+                showToast('Error toggling ban', 'error');
+            }
         }
 
         function approveWithdrawal(index) {
-            if (!confirm('Approve this withdrawal?')) return;
-            const w = adminData.withdrawals[index];
-            if (!w) return;
-            w.status = 'completed';
-            saveData();
-            addLog('withdrawal_approved', w.userId, `Approved ${w.amount} coins for ${w.userName}`);
-            renderAll();
-            showToast(`✅ Approved ${w.amount} coins for ${w.userName}`, 'success');
-            sendTelegramNotification(w, 'approved');
-            switchWithdrawSubTab('approved');
+            try {
+                if (!confirm('Approve this withdrawal?')) return;
+
+                var w = adminData.withdrawals[index];
+                if (!w) return;
+
+                w.status = 'completed';
+                saveData();
+                addLog('withdrawal_approved', w.userId, 'Approved ' + w.amount + ' coins for ' + w.userName);
+                renderAll();
+                showToast('✅ Approved ' + w.amount + ' coins for ' + w.userName, 'success');
+                sendTelegramNotification(w, 'approved');
+                switchWithdrawSubTab('approved');
+            } catch (e) {
+                console.error('Error approving withdrawal:', e);
+                showToast('Error approving withdrawal', 'error');
+            }
         }
 
         function rejectWithdrawal(index) {
-            if (!confirm('Reject this withdrawal? Coins will be returned.')) return;
-            const w = adminData.withdrawals[index];
-            if (!w) return;
+            try {
+                if (!confirm('Reject this withdrawal? Coins will be returned.')) return;
 
-            if (adminData.users[w.userId]) {
-                adminData.users[w.userId].balance = (adminData.users[w.userId].balance || 0) + w.amount;
+                var w = adminData.withdrawals[index];
+                if (!w) return;
+
+                if (adminData.users[w.userId]) {
+                    adminData.users[w.userId].balance = (adminData.users[w.userId].balance || 0) + w.amount;
+                }
+
+                w.status = 'failed';
+                saveData();
+                addLog('withdrawal_rejected', w.userId, 'Rejected ' + w.amount + ' coins for ' + w.userName);
+                renderAll();
+                showToast('❌ Rejected ' + w.amount + ' coins for ' + w.userName, 'error');
+                sendTelegramNotification(w, 'rejected');
+                switchWithdrawSubTab('rejected');
+            } catch (e) {
+                console.error('Error rejecting withdrawal:', e);
+                showToast('Error rejecting withdrawal', 'error');
             }
-
-            w.status = 'failed';
-            saveData();
-            addLog('withdrawal_rejected', w.userId, `Rejected ${w.amount} coins for ${w.userName}`);
-            renderAll();
-            showToast(`❌ Rejected ${w.amount} coins for ${w.userName}`, 'error');
-            sendTelegramNotification(w, 'rejected');
-            switchWithdrawSubTab('rejected');
         }
 
         function switchWithdrawSubTab(tab) {
-            document.querySelectorAll('.withdraw-sub-tab').forEach(t => t.classList.remove('active'));
-            document.querySelectorAll('.withdraw-sub-content').forEach(c => c.classList.remove('active'));
-            const map = { pending: 'pending-sub', approved: 'approved-sub', rejected: 'rejected-sub' };
-            document.querySelector(`.withdraw-sub-tab[data-subtab="${tab}"]`).classList.add('active');
-            document.getElementById(map[tab]).classList.add('active');
+            try {
+                var tabs = document.querySelectorAll('.withdraw-sub-tab');
+                for (var i = 0; i < tabs.length; i++) {
+                    tabs[i].classList.remove('active');
+                }
+
+                var contents = document.querySelectorAll('.withdraw-sub-content');
+                for (var j = 0; j < contents.length; j++) {
+                    contents[j].classList.remove('active');
+                }
+
+                var map = {
+                    'pending': 'pending-sub',
+                    'approved': 'approved-sub',
+                    'rejected': 'rejected-sub'
+                };
+
+                var targetTab = document.querySelector('.withdraw-sub-tab[data-subtab="' + tab + '"]');
+                if (targetTab) {
+                    targetTab.classList.add('active');
+                }
+
+                var targetContent = document.getElementById(map[tab]);
+                if (targetContent) {
+                    targetContent.classList.add('active');
+                }
+            } catch (e) {
+                console.error('Error switching tab:', e);
+            }
         }
 
         function saveSettings() {
-            const minWithdraw = parseInt(document.getElementById('minWithdraw').value);
-            const adReward = parseInt(document.getElementById('adReward').value);
-            if (minWithdraw > 0) adminData.settings.minWithdraw = minWithdraw;
-            if (adReward > 0) adminData.settings.adReward = adReward;
-            saveData();
-            addLog('settings_updated', 'admin', 'Updated admin settings');
-            showToast('✅ Settings saved!', 'success');
-        }
-
-        async function sendTelegramNotification(withdrawal, status) {
-            const message = `📊 *WITHDRAWAL ${status.toUpperCase()}* 📊\n\n👤 *User:* ${withdrawal.userName || 'Unknown'}\n🆔 *ID:* ${withdrawal.userId || 'N/A'}\n💰 *Amount:* ${withdrawal.amount.toLocaleString()} COINS\n📱 *Bkash:* ${withdrawal.bkashNumber}\n📌 *Status:* ${status.toUpperCase()}\n⏰ *Time:* ${new Date().toLocaleString()}`;
             try {
-                await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ chat_id: ADMIN_CHAT_ID, text: message, parse_mode: 'Markdown' })
-                });
-            } catch (e) {}
+                var minWithdraw = parseInt(document.getElementById('minWithdraw').value);
+                var adReward = parseInt(document.getElementById('adReward').value);
+
+                if (minWithdraw > 0) {
+                    adminData.settings.minWithdraw = minWithdraw;
+                }
+                if (adReward > 0) {
+                    adminData.settings.adReward = adReward;
+                }
+
+                saveData();
+                addLog('settings_updated', 'admin', 'Updated admin settings');
+                showToast('✅ Settings saved!', 'success');
+            } catch (e) {
+                console.error('Error saving settings:', e);
+                showToast('Error saving settings', 'error');
+            }
         }
 
-        function showToast(msg, type = 'success') {
-            const toast = document.getElementById('toast');
-            toast.textContent = msg;
-            toast.className = `toast ${type}`;
-            toast.style.display = 'block';
-            clearTimeout(toast._timeout);
-            toast._timeout = setTimeout(() => { toast.style.display = 'none'; }, 4000);
+        function sendTelegramNotification(withdrawal, status) {
+            try {
+                var message = '📊 *WITHDRAWAL ' + status.toUpperCase() + '* 📊\n\n' +
+                    '👤 *User:* ' + (withdrawal.userName || 'Unknown') + '\n' +
+                    '🆔 *ID:* ' + (withdrawal.userId || 'N/A') + '\n' +
+                    '💰 *Amount:* ' + withdrawal.amount.toLocaleString() + ' COINS\n' +
+                    '📱 *Bkash:* ' + withdrawal.bkashNumber + '\n' +
+                    '📌 *Status:* ' + status.toUpperCase() + '\n' +
+                    '⏰ *Time:* ' + new Date().toLocaleString();
+
+                fetch('https://api.telegram.org/bot' + BOT_TOKEN + '/sendMessage', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        chat_id: ADMIN_CHAT_ID,
+                        text: message,
+                        parse_mode: 'Markdown'
+                    })
+                }).catch(function(e) {
+                    console.error('Error sending notification:', e);
+                });
+            } catch (e) {
+                console.error('Error in sendTelegramNotification:', e);
+            }
+        }
+
+        function showToast(msg, type) {
+            try {
+                type = type || 'success';
+                var toast = document.getElementById('toast');
+                toast.textContent = msg;
+                toast.className = 'toast ' + type;
+                toast.style.display = 'block';
+                clearTimeout(toast._timeout);
+                toast._timeout = setTimeout(function() {
+                    toast.style.display = 'none';
+                }, 4000);
+            } catch (e) {
+                console.error('Error showing toast:', e);
+            }
         }
 
         // ==========================================
         // EVENT LISTENERS
         // ==========================================
-        document.querySelectorAll('.admin-tab').forEach(tab => {
-            tab.addEventListener('click', function() {
-                document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
-                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-                this.classList.add('active');
-                document.getElementById(this.dataset.tab + '-tab').classList.add('active');
-            });
-        });
+        document.addEventListener('DOMContentLoaded', function() {
+            try {
+                // Main Tabs
+                var mainTabs = document.querySelectorAll('.admin-tab');
+                for (var i = 0; i < mainTabs.length; i++) {
+                    mainTabs[i].addEventListener('click', function() {
+                        var allTabs = document.querySelectorAll('.admin-tab');
+                        for (var j = 0; j < allTabs.length; j++) {
+                            allTabs[j].classList.remove('active');
+                        }
 
-        document.querySelectorAll('.withdraw-sub-tab').forEach(tab => {
-            tab.addEventListener('click', function() { switchWithdrawSubTab(this.dataset.subtab); });
-        });
+                        var allContents = document.querySelectorAll('.tab-content');
+                        for (var k = 0; k < allContents.length; k++) {
+                            allContents[k].classList.remove('active');
+                        }
 
-        document.getElementById('searchUser')?.addEventListener('input', renderUsers);
+                        this.classList.add('active');
+                        var tabId = this.getAttribute('data-tab');
+                        var targetContent = document.getElementById(tabId + '-tab');
+                        if (targetContent) {
+                            targetContent.classList.add('active');
+                        }
+                    });
+                }
 
-        document.querySelectorAll('.modal-overlay').forEach(modal => {
-            modal.addEventListener('click', function(e) { if (e.target === this) closeModal(); });
+                // Withdraw Sub Tabs
+                var subTabs = document.querySelectorAll('.withdraw-sub-tab');
+                for (var l = 0; l < subTabs.length; l++) {
+                    subTabs[l].addEventListener('click', function() {
+                        switchWithdrawSubTab(this.getAttribute('data-subtab'));
+                    });
+                }
+
+                // Search
+                var searchInput = document.getElementById('searchUser');
+                if (searchInput) {
+                    searchInput.addEventListener('input', renderUsers);
+                }
+
+                // Modal Close
+                var modals = document.querySelectorAll('.modal-overlay');
+                for (var m = 0; m < modals.length; m++) {
+                    modals[m].addEventListener('click', function(e) {
+                        if (e.target === this) {
+                            closeModal();
+                        }
+                    });
+                }
+            } catch (e) {
+                console.error('Error setting up event listeners:', e);
+            }
         });
 
         // ==========================================
-        // AUTO SYNC - প্রতি ১০ সেকেন্ড
+        // AUTO SYNC
         // ==========================================
         setInterval(fetchUsersFromBot, 10000);
 
@@ -670,14 +1389,21 @@
         // INITIALIZE
         // ==========================================
         loadData();
-        
-        // প্রথমবার বট থেকে ডেটা নিন
-        setTimeout(fetchUsersFromBot, 1000);
-        
-        showToast('👋 Welcome Admin! Panel v6.0 - Bot Sync');
 
-        document.getElementById('minWithdraw').value = adminData.settings.minWithdraw || 10000;
-        document.getElementById('adReward').value = adminData.settings.adReward || 10;
+        // First sync after 1 second
+        setTimeout(fetchUsersFromBot, 1000);
+
+        showToast('👋 Welcome Admin! Panel v6.0', 'success');
+
+        var minWithdrawInput = document.getElementById('minWithdraw');
+        if (minWithdrawInput) {
+            minWithdrawInput.value = adminData.settings.minWithdraw || 10000;
+        }
+
+        var adRewardInput = document.getElementById('adReward');
+        if (adRewardInput) {
+            adRewardInput.value = adminData.settings.adReward || 10;
+        }
 
         console.log('✅ Admin Panel v6.0 Loaded');
         console.log('📊 Total Users:', Object.keys(adminData.users).length);
